@@ -13,6 +13,7 @@ class _IncomeScreenState extends State<IncomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Semua Pemasukan'),
+        centerTitle: true,
         elevation: 0.5,
       ),
       body: ListView.builder(

@@ -14,6 +14,7 @@ class _SettingScreenState extends State<SettingScreen> {
       appBar: AppBar(
         title: Text('Pengaturan'),
         elevation: 0.5,
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
         physics: BouncingScrollPhysics(),

@@ -1,10 +1,17 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:doku/screens/categories/category_screen.dart';
+import 'package:doku/screens/reports/all_report_screen.dart';
+import 'package:doku/screens/reports/annual_report_screen.dart';
+import 'package:doku/screens/reports/monthly_report_screen.dart';
+import 'package:doku/screens/reports/weekly_report_screen.dart';
 import 'package:doku/screens/settings/setting_screen.dart';
+import 'package:doku/screens/transactions/create/option_create_screen.dart';
 import 'package:doku/screens/transactions/expense_screen.dart';
 import 'package:doku/screens/transactions/income_screen.dart';
 import 'package:doku/utils/currency_format.dart';
 import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:package_info_plus/package_info_plus.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -17,12 +24,27 @@ class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   List<String> transactionPeriods = ['Mingguan', 'Bulanan', 'Tahunan', 'Semua'];
 
+  PackageInfo? packageInfo;
+  
+  Future getPackageInfo() async{
+    packageInfo = await PackageInfo.fromPlatform();
+  }
+
+  @override
+  void initState() {
+    getPackageInfo();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
-          title: const Text('DOKU', style: TextStyle(fontSize: 20),),
+          title: const Text(
+            'DOKU',
+            style: TextStyle(fontSize: 20),
+          ),
           elevation: 0,
           leading: IconButton(
             onPressed: () => _scaffoldKey.currentState?.openDrawer(),
@@ -32,7 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Row(
               children: [
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
                   decoration: BoxDecoration(
                       color: Colors.green.shade400,
                       borderRadius: BorderRadius.circular(15)),
@@ -44,14 +66,21 @@ class _HomeScreenState extends State<HomeScreen> {
                 SizedBox(
                   width: 5,
                 ),
-                Container(
-                  padding: EdgeInsets.all(3),
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle, color: Colors.grey.shade200),
-                  child: Icon(
-                    Icons.add,
-                    color: Colors.white,
-                    size: 20,
+                GestureDetector(
+                  onTap: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (builder){
+                      return OptionCreateScreen();
+                    }));
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(3),
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle, color: Colors.grey.shade200),
+                    child: Icon(
+                      Icons.add,
+                      color: Colors.white,
+                      size: 20,
+                    ),
                   ),
                 ),
                 SizedBox(
@@ -75,7 +104,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: const [
                       Text(
                         "DOKU",
-                        style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold),
                       ),
                       Text(
                         "Dompet Saku",
@@ -89,29 +121,31 @@ class _HomeScreenState extends State<HomeScreen> {
               ListTile(
                   onTap: () {
                     _scaffoldKey.currentState?.openEndDrawer();
-                    // Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    //   return const Disclaimer();
-                    // }));
+                    Navigator.push(context, MaterialPageRoute(builder: (builder){
+                      return const OptionCreateScreen();
+                    }));
                   },
-                  leading: Icon(Icons.add_circle),
+                  leading: const Icon(Icons.add_circle),
                   title: const Text("Tambah Transaksi")),
               ListTile(
                   onTap: () {
                     _scaffoldKey.currentState?.openEndDrawer();
-                    Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
                       return const CategoryScreen();
                     }));
                   },
-                  leading: Icon(Icons.category),
+                  leading: const Icon(Icons.category),
                   title: const Text("Kategori")),
               ListTile(
                   onTap: () {
                     _scaffoldKey.currentState?.openEndDrawer();
-                    Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
                       return const SettingScreen();
                     }));
                   },
-                  leading: Icon(Icons.settings),
+                  leading: const Icon(Icons.settings),
                   title: const Text("Pengaturan")),
               ListTile(
                   onTap: () {
@@ -120,8 +154,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     //   return const Disclaimer();
                     // }));
                   },
-                  leading: Icon(Icons.info),
-                  title: const Text("Versi 1.0.1")),
+                  leading: const Icon(Icons.info),
+                  title: Text("Versi ${packageInfo != null ? packageInfo!.version : ''}")),
             ]),
           ),
         ),
@@ -134,6 +168,128 @@ class _HomeScreenState extends State<HomeScreen> {
                 slivers: [
                   SliverList(
                       delegate: SliverChildListDelegate([
+                        Container(
+                          margin: EdgeInsets.only(left: 15, right: 15, top: 15, bottom: 5),
+                          child: CarouselSlider(
+                              options: CarouselOptions(
+                                  autoPlay: true,
+                                  aspectRatio: 2,
+                                  enlargeCenterPage: true,
+                                  viewportFraction: 1),
+                              items: [
+                                Container(
+                                  height: 75,
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                      color: Colors.green.shade400,
+                                      borderRadius: BorderRadius.circular(15)),
+                                  child: Stack(
+                                    children: [
+                                      Container(
+                                        padding: EdgeInsets.only(left: 5),
+                                        child: Icon(
+                                          Icons.payment,
+                                          size: 200,
+                                          color: Colors.green.shade500
+                                              .withOpacity(0.5),
+                                        ),
+                                      ),
+                                      Container(
+                                          padding: EdgeInsets.only(
+                                              right: 15, bottom: 10),
+                                          alignment: Alignment.bottomRight,
+                                          child: Text(
+                                            currencyId.format(200000),
+                                            textAlign: TextAlign.end,
+                                            softWrap: true,
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 25),
+                                          )),
+                                      Container(
+                                        padding: EdgeInsets.all(10),
+                                        alignment: Alignment.topLeft,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'Total Pemasukan',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 16),
+                                            ),
+                                            Text(
+                                              '(Income)',
+                                              style:
+                                                  TextStyle(color: Colors.white),
+                                            )
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  height: 75,
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                      color: Colors.orange.shade400,
+                                      borderRadius: BorderRadius.circular(15)),
+                                  child: Stack(
+                                    children: [
+                                      Container(
+                                        padding: EdgeInsets.only(left: 5),
+                                        child: Icon(
+                                          Icons.payment,
+                                          size: 200,
+                                          color: Colors.orange.shade500
+                                              .withOpacity(0.5),
+                                        ),
+                                      ),
+                                      Container(
+                                          padding: EdgeInsets.only(
+                                              right: 15, bottom: 10),
+                                          alignment: Alignment.bottomRight,
+                                          child: Text(
+                                            currencyId.format(200000),
+                                            textAlign: TextAlign.end,
+                                            softWrap: true,
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 25),
+                                          )),
+                                      Container(
+                                        padding: EdgeInsets.all(10),
+                                        alignment: Alignment.topLeft,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'Total Pengeluaran',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 16),
+                                            ),
+                                            Text(
+                                              '(Expense)',
+                                              style:
+                                                  TextStyle(color: Colors.white),
+                                            )
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                        ),
                     Container(
                       margin:
                           EdgeInsets.symmetric(horizontal: 15, vertical: 10),
@@ -143,100 +299,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           borderRadius: BorderRadius.circular(15)),
                       child: Column(
                         children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('Total Pemasukan'),
-                                    Container(
-                                      height: 75,
-                                      width: double.infinity,
-                                      decoration: BoxDecoration(
-                                          color: Colors.green.shade400,
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
-                                      child: Stack(
-                                        children: [
-                                          Container(
-                                            padding: EdgeInsets.only(left: 5),
-                                            child: Icon(
-                                              Icons.payment,
-                                              size: 70,
-                                              color: Colors.green.shade500
-                                                  .withOpacity(0.5),
-                                            ),
-                                          ),
-                                          Container(
-                                              padding: EdgeInsets.only(
-                                                  right: 10, bottom: 5),
-                                              alignment: Alignment.bottomRight,
-                                              child: Text(
-                                                currencyId.format(200000),
-                                                textAlign: TextAlign.end,
-                                                softWrap: true,
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ))
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('Total Pengeluaran'),
-                                    Container(
-                                      height: 75,
-                                      width: double.infinity,
-                                      decoration: BoxDecoration(
-                                          color: Colors.orange.shade400,
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
-                                      child: Stack(
-                                        children: [
-                                          Container(
-                                            padding: EdgeInsets.only(left: 5),
-                                            child: Icon(
-                                              Icons.payment,
-                                              size: 70,
-                                              color: Colors.orange.shade500
-                                                  .withOpacity(0.5),
-                                            ),
-                                          ),
-                                          Container(
-                                              padding: EdgeInsets.only(
-                                                  right: 10, bottom: 5),
-                                              alignment: Alignment.bottomRight,
-                                              child: Text(
-                                                currencyId.format(200000),
-                                                textAlign: TextAlign.end,
-                                                softWrap: true,
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ))
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
                           Row(
                             children: [
                               Expanded(
@@ -269,36 +331,45 @@ class _HomeScreenState extends State<HomeScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text('Pengaturan'),
-                                    Container(
-                                      height: 30,
-                                      padding:
-                                          EdgeInsets.symmetric(horizontal: 5),
-                                      decoration: BoxDecoration(
-                                          color: Colors.grey.shade200,
-                                          borderRadius:
-                                              BorderRadius.circular(5)),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Icon(
-                                            Icons.settings,
-                                            size: 15,
-                                          ),
-                                          SizedBox(
-                                            width: 3,
-                                          ),
-                                          Text('Pengaturan',
-                                              overflow: TextOverflow.ellipsis,
-                                              style: TextStyle(fontSize: 12)),
-                                          SizedBox(
-                                            width: 3,
-                                          ),
-                                          Icon(
-                                            Icons.chevron_right,
-                                            size: 15,
-                                          ),
-                                        ],
+                                    GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(context,
+                                            MaterialPageRoute(
+                                                builder: (builder) {
+                                          return SettingScreen();
+                                        }));
+                                      },
+                                      child: Container(
+                                        height: 30,
+                                        padding:
+                                            EdgeInsets.symmetric(horizontal: 5),
+                                        decoration: BoxDecoration(
+                                            color: Colors.grey.shade200,
+                                            borderRadius:
+                                                BorderRadius.circular(5)),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Icon(
+                                              Icons.settings,
+                                              size: 15,
+                                            ),
+                                            SizedBox(
+                                              width: 3,
+                                            ),
+                                            Text('Pengaturan',
+                                                overflow: TextOverflow.ellipsis,
+                                                style: TextStyle(fontSize: 12)),
+                                            SizedBox(
+                                              width: 3,
+                                            ),
+                                            Icon(
+                                              Icons.chevron_right,
+                                              size: 15,
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -325,16 +396,35 @@ class _HomeScreenState extends State<HomeScreen> {
                           padding: EdgeInsets.symmetric(horizontal: 15),
                           itemCount: transactionPeriods.length,
                           itemBuilder: (context, index) {
-                            return Container(
-                                alignment: Alignment.center,
-                                margin: EdgeInsets.only(right: 5),
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 3, horizontal: 15),
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    border: Border.all(color: Colors.grey.shade200),
-                                    borderRadius: BorderRadius.circular(15)),
-                                child: Text(transactionPeriods[index]));
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(context,
+                                    MaterialPageRoute(builder: (builder) {
+                                  if (transactionPeriods[index] == 'Mingguan') {
+                                    return WeeklyReportScreen();
+                                  } else if (transactionPeriods[index] ==
+                                      'Tahunan') {
+                                    return AnnualReportScreen();
+                                  } else if (transactionPeriods[index] ==
+                                      'Bulanan') {
+                                    return MonthlyReportScreen();
+                                  } else {
+                                    return AllReportScreen();
+                                  }
+                                }));
+                              },
+                              child: Container(
+                                  alignment: Alignment.center,
+                                  margin: EdgeInsets.only(right: 5),
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 3, horizontal: 15),
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      border: Border.all(
+                                          color: Colors.grey.shade200),
+                                      borderRadius: BorderRadius.circular(15)),
+                                  child: Text(transactionPeriods[index])),
+                            );
                           }),
                     )
                   ])),
@@ -391,8 +481,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           borderRadius: BorderRadius.circular(10),
                           color: Colors.white),
                       child: ListTile(
-                        onTap: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (builder){
+                        onTap: () {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (builder) {
                             return IncomeScreen();
                           }));
                         },
@@ -408,8 +499,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           borderRadius: BorderRadius.circular(10),
                           color: Colors.white),
                       child: ListTile(
-                        onTap: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (builder){
+                        onTap: () {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (builder) {
                             return ExpenseScreen();
                           }));
                         },
@@ -425,33 +517,40 @@ class _HomeScreenState extends State<HomeScreen> {
                   ])),
                   SliverList(delegate: SliverChildListDelegate([])),
                 ]),
-            Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              alignment: Alignment.bottomCenter,
+            GestureDetector(
+              onTap: (){
+                Navigator.push(context, MaterialPageRoute(builder: (builder){
+                  return OptionCreateScreen();
+                }));
+              },
               child: Container(
-                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 15),
-                margin: EdgeInsets.only(bottom: 15),
-                decoration: BoxDecoration(
-                    color: Colors.green.shade400,
-                    borderRadius: BorderRadius.circular(20)),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.add_circle,
-                      color: Colors.white,
-                    ),
-                    SizedBox(
-                      width: 5,
-                    ),
-                    Text(
-                      'Tambah Transaksi',
-                      style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold),
-                    )
-                  ],
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 15),
+                  margin: EdgeInsets.only(bottom: 15),
+                  decoration: BoxDecoration(
+                      color: Colors.green.shade400,
+                      borderRadius: BorderRadius.circular(20)),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.add_circle,
+                        color: Colors.white,
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      Text(
+                        'Tambah Transaksi',
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),
+                      )
+                    ],
+                  ),
                 ),
               ),
             )

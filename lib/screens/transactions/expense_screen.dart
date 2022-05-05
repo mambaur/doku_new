@@ -13,6 +13,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Semua Pengeluaran'),
+        centerTitle: true,
         elevation: 0.5,
       ),
       body: ListView.builder(
