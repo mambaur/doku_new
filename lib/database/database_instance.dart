@@ -12,6 +12,7 @@ class DatabaseInstance {
   final String categoryTable = 'categories';
   final String categoryId = 'id';
   final String categoryName = 'name';
+  final String categoryDescription = 'description';
   final String categoryType = 'type'; // {income, expense} (string)
   final String categoryCreatedAt = 'created_at';
   final String categoryUpdatedAt = 'updated_at';
@@ -50,6 +51,7 @@ class DatabaseInstance {
           CREATE TABLE $categoryTable (
             $categoryId INTEGER PRIMARY KEY,
             $categoryName TEXT NOT NULL,
+            $categoryDescription TEXT NOT NULL,
             $categoryType TEXT NOT NULL,
             $categoryCreatedAt TEXT NOT NULL,
             $categoryUpdatedAt TEXT NOT NULL
