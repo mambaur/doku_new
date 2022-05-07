@@ -41,8 +41,7 @@ class DatabaseInstance {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, _databaseName);
     return await openDatabase(path,
-        version: _databaseVersion,
-        onCreate: _onCreate);
+        version: _databaseVersion, onCreate: _onCreate);
   }
 
   // SQL code to create the database table
@@ -50,23 +49,23 @@ class DatabaseInstance {
     await db.execute('''
           CREATE TABLE $categoryTable (
             $categoryId INTEGER PRIMARY KEY,
-            $categoryName TEXT NOT NULL,
-            $categoryDescription TEXT NOT NULL,
-            $categoryType TEXT NOT NULL,
-            $categoryCreatedAt TEXT NOT NULL,
-            $categoryUpdatedAt TEXT NOT NULL
+            $categoryName TEXT NULL,
+            $categoryDescription TEXT NULL,
+            $categoryType TEXT NULL,
+            $categoryCreatedAt TEXT NULL,
+            $categoryUpdatedAt TEXT NULL
           )
           ''');
-    
+
     await db.execute('''
           CREATE TABLE $transactionTable (
             $transactionId INTEGER PRIMARY KEY,
-            $transactionDate TEXT NOT NULL,
-            $transactionNominal INTEGER NOT NULL,
-            $transactionCategoryId INTEGER NOT NULL,
-            $transactionNotes TEXT NOT NULL,
-            $transactionCreatedAt TEXT NOT NULL,
-            $transactionUpdatedAt TEXT NOT NULL
+            $transactionDate TEXT NULL,
+            $transactionNominal INTEGER NULL,
+            $transactionCategoryId INTEGER NULL,
+            $transactionNotes TEXT NULL,
+            $transactionCreatedAt TEXT NULL,
+            $transactionUpdatedAt TEXT NULL
           )
           ''');
   }

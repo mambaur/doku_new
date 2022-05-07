@@ -1,5 +1,9 @@
+import 'package:cool_alert/cool_alert.dart';
+import 'package:doku/database/categories/category_repository.dart';
+import 'package:doku/models/category_model.dart';
 import 'package:doku/screens/categories/expense_category_screen.dart';
 import 'package:doku/screens/categories/income_category_screen.dart';
+import 'package:doku/utils/date_instance.dart';
 import 'package:flutter/material.dart';
 
 class CategoryScreen extends StatefulWidget {
@@ -11,13 +15,42 @@ class CategoryScreen extends StatefulWidget {
 
 class _CategoryScreenState extends State<CategoryScreen>
     with SingleTickerProviderStateMixin {
+  final CategoryRepository _categoryRepo = CategoryRepository();
   List<String> categoryType = ['Pemasukan', 'Pengeluaran'];
-  String selectedCategoryType = 'Pemasukan';
+  String selectedCategoryTypeStore = 'Pemasukan';
+  String selectedCategoryTypeEdit = 'Pemasukan';
   TabController? _tabController;
 
-  final _formKey = GlobalKey<FormState>();
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _descriptionController = TextEditingController();
+  final _formKeyStore = GlobalKey<FormState>();
+  final TextEditingController _nameStoreController = TextEditingController();
+  final TextEditingController _descriptionStoreController =
+      TextEditingController();
+
+  final _formKeyEdit = GlobalKey<FormState>();
+  final TextEditingController _nameEditController = TextEditingController();
+  final TextEditingController _descriptionEditController =
+      TextEditingController();
+
+  Future storeCategory() async {
+    CategoryModel categoryModel = CategoryModel(
+        name: _nameStoreController.text,
+        description: _descriptionStoreController.text,
+        type: selectedCategoryTypeStore == 'Pemasukan' ? 'income' : 'expense',
+        createdAt: DateInstance.timestamp(),
+        updatedAt: DateInstance.timestamp());
+    await _categoryRepo.insert(categoryModel.toJson());
+  }
+
+  Future updateCategory(CategoryModel param) async {
+    CategoryModel categoryModel = CategoryModel(
+        id: param.id,
+        name: _nameEditController.text,
+        description: _descriptionEditController.text,
+        type: selectedCategoryTypeEdit == 'Pemasukan' ? 'income' : 'expense',
+        createdAt: param.createdAt,
+        updatedAt: DateInstance.timestamp());
+    await _categoryRepo.update(categoryModel.toJson());
+  }
 
   @override
   void initState() {
@@ -57,8 +90,16 @@ class _CategoryScreenState extends State<CategoryScreen>
         body: TabBarView(
           controller: _tabController,
           children: [
-            IncomeCategoryScreen(),
-            ExpenseCategoryScreen(),
+            IncomeCategoryScreen(
+              onEdit: (categoryModel) {
+                _editCategoryDialog(categoryModel!);
+              },
+            ),
+            ExpenseCategoryScreen(
+              onEdit: (categoryModel) {
+                _editCategoryDialog(categoryModel!);
+              },
+            ),
           ],
         ),
       ),
@@ -66,6 +107,8 @@ class _CategoryScreenState extends State<CategoryScreen>
   }
 
   Future<void> _addCategoryDialog() async {
+    _nameStoreController.text = '';
+    _descriptionStoreController.text = '';
     return showDialog<void>(
       context: context,
       barrierDismissible: true,
@@ -77,11 +120,11 @@ class _CategoryScreenState extends State<CategoryScreen>
               child: ListBody(
                 children: <Widget>[
                   Form(
-                    key: _formKey,
+                    key: _formKeyStore,
                     child: Column(
                       children: <Widget>[
                         TextFormField(
-                          controller: _nameController,
+                          controller: _nameStoreController,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Input nama kategori tidak boleh kosong.';
@@ -100,7 +143,7 @@ class _CategoryScreenState extends State<CategoryScreen>
                               label: Text('Nama Kategori')),
                         ),
                         TextFormField(
-                          controller: _descriptionController,
+                          controller: _descriptionStoreController,
                           decoration: InputDecoration(
                               focusedBorder: UnderlineInputBorder(
                                 borderSide:
@@ -120,7 +163,7 @@ class _CategoryScreenState extends State<CategoryScreen>
                   ),
                   DropdownButton<String>(
                     itemHeight: 70.0,
-                    value: selectedCategoryType,
+                    value: selectedCategoryTypeStore,
                     icon: const Icon(Icons.arrow_drop_down),
                     elevation: 16,
                     isExpanded: true,
@@ -131,7 +174,7 @@ class _CategoryScreenState extends State<CategoryScreen>
                     ),
                     onChanged: (String? newValue) {
                       setState(() {
-                        selectedCategoryType = newValue!;
+                        selectedCategoryTypeStore = newValue!;
                       });
                     },
                     items: categoryType
@@ -161,12 +204,143 @@ class _CategoryScreenState extends State<CategoryScreen>
             ),
             TextButton(
               child: const Text('Tambah'),
-              onPressed: () {
-                if (_formKey.currentState!.validate()) {
+              onPressed: () async {
+                if (_formKeyStore.currentState!.validate()) {
+                  await storeCategory();
                   Navigator.of(context).pop();
+                  CoolAlert.show(
+                    title: 'Sukses!',
+                    context: context,
+                    type: CoolAlertType.success,
+                    text:
+                        "Kategori ${_nameStoreController.text} telah ditambahkan.",
+                  );
                   setState(() {
                     _tabController!.animateTo(
-                        selectedCategoryType == 'Pengeluaran' ? 1 : 0);
+                        selectedCategoryTypeStore == 'Pengeluaran' ? 1 : 0);
+                  });
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _editCategoryDialog(CategoryModel categoryModel) async {
+    _nameEditController.text = categoryModel.name ?? '';
+    _descriptionEditController.text = categoryModel.description ?? '';
+    selectedCategoryTypeEdit =
+        categoryModel.type == 'income' ? 'Pemasukan' : 'Pengeluaran';
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Edit Kategori'),
+          content: StatefulBuilder(builder: (context, setState) {
+            return SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Form(
+                    key: _formKeyEdit,
+                    child: Column(
+                      children: <Widget>[
+                        TextFormField(
+                          controller: _nameEditController,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Input nama kategori tidak boleh kosong.';
+                            }
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.green.shade700),
+                              ),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.green.shade700),
+                              ),
+                              label: Text('Nama Kategori')),
+                        ),
+                        TextFormField(
+                          controller: _descriptionEditController,
+                          decoration: InputDecoration(
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.green.shade700),
+                              ),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.green.shade700),
+                              ),
+                              label: Text('Deskripsi (Opsional)')),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  DropdownButton<String>(
+                    itemHeight: 70.0,
+                    value: selectedCategoryTypeEdit,
+                    icon: const Icon(Icons.arrow_drop_down),
+                    elevation: 16,
+                    isExpanded: true,
+                    style: TextStyle(color: Colors.green.shade400),
+                    underline: Container(
+                      height: 2,
+                      color: Colors.green.shade400,
+                    ),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        selectedCategoryTypeEdit = newValue!;
+                      });
+                    },
+                    items: categoryType
+                        .map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(
+                          value,
+                          style: const TextStyle(color: Colors.black),
+                        ),
+                      );
+                    }).toList(),
+                  )
+                ],
+              ),
+            );
+          }),
+          actions: <Widget>[
+            TextButton(
+              child: const Text(
+                'Batal',
+                style: TextStyle(color: Colors.grey),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Update'),
+              onPressed: () async {
+                if (_formKeyEdit.currentState!.validate()) {
+                  await updateCategory(categoryModel);
+                  Navigator.of(context).pop();
+                  CoolAlert.show(
+                    title: 'Sukses!',
+                    context: context,
+                    type: CoolAlertType.success,
+                    text: "Kategori ${_nameEditController.text} telah diubah.",
+                  );
+                  setState(() {
+                    _tabController!.animateTo(
+                        selectedCategoryTypeEdit == 'Pengeluaran' ? 1 : 0);
                   });
                 }
               },
