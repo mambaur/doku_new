@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ExpenseScreen extends StatefulWidget {
-  const ExpenseScreen({ Key? key }) : super(key: key);
+  const ExpenseScreen({Key? key}) : super(key: key);
 
   @override
   State<ExpenseScreen> createState() => _ExpenseScreenState();
@@ -16,6 +16,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
         centerTitle: true,
         elevation: 0.5,
       ),
+      // backgroundColor: Colors.white,
       body: ListView.builder(
           itemCount: 10,
           physics: BouncingScrollPhysics(),
@@ -29,14 +30,23 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
                 children: [
                   Expanded(
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Kamis, 04-05-2022', style: TextStyle(fontSize: 12, color: Colors.grey),),
-                      Text('Gaji Bulanan', style: TextStyle(fontWeight: FontWeight.bold),),
+                      Text(
+                        'Kamis, 04-05-2022',
+                        style: TextStyle(fontSize: 12, color: Colors.grey),
+                      ),
+                      Text(
+                        'Gaji Bulanan',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                       Text('Note: Uang dari pak bos'),
                     ],
                   )),
-                  Text('Rp 2.000.000', style: TextStyle(color: Colors.orange.shade500, fontWeight: FontWeight.bold))
+                  Text('Rp 2.000.000',
+                      style: TextStyle(
+                          color: Colors.orange.shade500,
+                          fontWeight: FontWeight.bold))
                 ],
               ),
             );

@@ -5,6 +5,8 @@ import 'package:doku/screens/reports/annual_report_screen.dart';
 import 'package:doku/screens/reports/monthly_report_screen.dart';
 import 'package:doku/screens/reports/weekly_report_screen.dart';
 import 'package:doku/screens/settings/setting_screen.dart';
+import 'package:doku/screens/transactions/create/expense_create_screen.dart';
+import 'package:doku/screens/transactions/create/income_create_screen.dart';
 import 'package:doku/screens/transactions/create/option_create_screen.dart';
 import 'package:doku/screens/transactions/expense_screen.dart';
 import 'package:doku/screens/transactions/income_screen.dart';
@@ -25,8 +27,8 @@ class _HomeScreenState extends State<HomeScreen> {
   List<String> transactionPeriods = ['Mingguan', 'Bulanan', 'Tahunan', 'Semua'];
 
   PackageInfo? packageInfo;
-  
-  Future getPackageInfo() async{
+
+  Future getPackageInfo() async {
     packageInfo = await PackageInfo.fromPlatform();
   }
 
@@ -67,8 +69,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   width: 5,
                 ),
                 GestureDetector(
-                  onTap: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (builder){
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (builder) {
                       return OptionCreateScreen();
                     }));
                   },
@@ -121,9 +124,10 @@ class _HomeScreenState extends State<HomeScreen> {
               ListTile(
                   onTap: () {
                     _scaffoldKey.currentState?.openEndDrawer();
-                    Navigator.push(context, MaterialPageRoute(builder: (builder){
-                      return const OptionCreateScreen();
-                    }));
+                    _optionTransactionDialog();
+                    // Navigator.push(context, MaterialPageRoute(builder: (builder){
+                    //   return const OptionCreateScreen();
+                    // }));
                   },
                   leading: const Icon(Icons.add_circle),
                   title: const Text("Tambah Transaksi")),
@@ -155,7 +159,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     // }));
                   },
                   leading: const Icon(Icons.info),
-                  title: Text("Versi ${packageInfo != null ? packageInfo!.version : ''}")),
+                  title: Text(
+                      "Versi ${packageInfo != null ? packageInfo!.version : ''}")),
             ]),
           ),
         ),
@@ -168,128 +173,127 @@ class _HomeScreenState extends State<HomeScreen> {
                 slivers: [
                   SliverList(
                       delegate: SliverChildListDelegate([
-                        Container(
-                          margin: EdgeInsets.only(left: 15, right: 15, top: 15, bottom: 5),
-                          child: CarouselSlider(
-                              options: CarouselOptions(
-                                  autoPlay: true,
-                                  aspectRatio: 2,
-                                  enlargeCenterPage: true,
-                                  viewportFraction: 1),
-                              items: [
+                    Container(
+                      margin: EdgeInsets.only(
+                          left: 15, right: 15, top: 15, bottom: 5),
+                      child: CarouselSlider(
+                        options: CarouselOptions(
+                            autoPlay: true,
+                            aspectRatio: 2,
+                            enlargeCenterPage: true,
+                            viewportFraction: 1),
+                        items: [
+                          Container(
+                            height: 75,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                                color: Colors.green.shade400,
+                                borderRadius: BorderRadius.circular(15)),
+                            child: Stack(
+                              children: [
                                 Container(
-                                  height: 75,
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                      color: Colors.green.shade400,
-                                      borderRadius: BorderRadius.circular(15)),
-                                  child: Stack(
-                                    children: [
-                                      Container(
-                                        padding: EdgeInsets.only(left: 5),
-                                        child: Icon(
-                                          Icons.payment,
-                                          size: 200,
-                                          color: Colors.green.shade500
-                                              .withOpacity(0.5),
-                                        ),
-                                      ),
-                                      Container(
-                                          padding: EdgeInsets.only(
-                                              right: 15, bottom: 10),
-                                          alignment: Alignment.bottomRight,
-                                          child: Text(
-                                            currencyId.format(200000),
-                                            textAlign: TextAlign.end,
-                                            softWrap: true,
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 25),
-                                          )),
-                                      Container(
-                                        padding: EdgeInsets.all(10),
-                                        alignment: Alignment.topLeft,
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              'Total Pemasukan',
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 16),
-                                            ),
-                                            Text(
-                                              '(Income)',
-                                              style:
-                                                  TextStyle(color: Colors.white),
-                                            )
-                                          ],
-                                        ),
-                                      )
-                                    ],
+                                  padding: EdgeInsets.only(left: 5),
+                                  child: Icon(
+                                    Icons.payment,
+                                    size: 200,
+                                    color:
+                                        Colors.green.shade500.withOpacity(0.5),
                                   ),
                                 ),
                                 Container(
-                                  height: 75,
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                      color: Colors.orange.shade400,
-                                      borderRadius: BorderRadius.circular(15)),
-                                  child: Stack(
+                                    padding:
+                                        EdgeInsets.only(right: 15, bottom: 10),
+                                    alignment: Alignment.bottomRight,
+                                    child: Text(
+                                      currencyId.format(200000),
+                                      textAlign: TextAlign.end,
+                                      softWrap: true,
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 25),
+                                    )),
+                                Container(
+                                  padding: EdgeInsets.all(10),
+                                  alignment: Alignment.topLeft,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      Container(
-                                        padding: EdgeInsets.only(left: 5),
-                                        child: Icon(
-                                          Icons.payment,
-                                          size: 200,
-                                          color: Colors.orange.shade500
-                                              .withOpacity(0.5),
-                                        ),
+                                      Text(
+                                        'Total Pemasukan',
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16),
                                       ),
-                                      Container(
-                                          padding: EdgeInsets.only(
-                                              right: 15, bottom: 10),
-                                          alignment: Alignment.bottomRight,
-                                          child: Text(
-                                            currencyId.format(200000),
-                                            textAlign: TextAlign.end,
-                                            softWrap: true,
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 25),
-                                          )),
-                                      Container(
-                                        padding: EdgeInsets.all(10),
-                                        alignment: Alignment.topLeft,
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              'Total Pengeluaran',
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 16),
-                                            ),
-                                            Text(
-                                              '(Expense)',
-                                              style:
-                                                  TextStyle(color: Colors.white),
-                                            )
-                                          ],
-                                        ),
+                                      Text(
+                                        '(Income)',
+                                        style: TextStyle(color: Colors.white),
                                       )
                                     ],
                                   ),
-                                ),
+                                )
                               ],
                             ),
-                        ),
+                          ),
+                          Container(
+                            height: 75,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                                color: Colors.orange.shade400,
+                                borderRadius: BorderRadius.circular(15)),
+                            child: Stack(
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.only(left: 5),
+                                  child: Icon(
+                                    Icons.payment,
+                                    size: 200,
+                                    color:
+                                        Colors.orange.shade500.withOpacity(0.5),
+                                  ),
+                                ),
+                                Container(
+                                    padding:
+                                        EdgeInsets.only(right: 15, bottom: 10),
+                                    alignment: Alignment.bottomRight,
+                                    child: Text(
+                                      currencyId.format(200000),
+                                      textAlign: TextAlign.end,
+                                      softWrap: true,
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 25),
+                                    )),
+                                Container(
+                                  padding: EdgeInsets.all(10),
+                                  alignment: Alignment.topLeft,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Total Pengeluaran',
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16),
+                                      ),
+                                      Text(
+                                        '(Expense)',
+                                        style: TextStyle(color: Colors.white),
+                                      )
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                     Container(
                       margin:
                           EdgeInsets.symmetric(horizontal: 15, vertical: 10),
@@ -518,10 +522,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   SliverList(delegate: SliverChildListDelegate([])),
                 ]),
             GestureDetector(
-              onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (builder){
-                  return OptionCreateScreen();
-                }));
+              onTap: () {
+                _optionTransactionDialog();
+                // Navigator.push(context, MaterialPageRoute(builder: (builder){
+                //   return OptionCreateScreen();
+                // }));
               },
               child: Container(
                 width: MediaQuery.of(context).size.width,
@@ -556,6 +561,45 @@ class _HomeScreenState extends State<HomeScreen> {
             )
           ],
         ));
+  }
+
+  Future<void> _optionTransactionDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                ListTile(
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (builder) {
+                      return IncomeCreateScreen();
+                    }));
+                  },
+                  title: Text('Pemasukan'),
+                  trailing: Icon(Icons.chevron_right),
+                ),
+                ListTile(
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (builder) {
+                      return ExpenseCreateScreen();
+                    }));
+                  },
+                  title: Text('Pengeluaran'),
+                  trailing: Icon(Icons.chevron_right),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 }
 
