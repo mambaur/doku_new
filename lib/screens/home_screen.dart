@@ -7,7 +7,6 @@ import 'package:doku/screens/reports/weekly_report_screen.dart';
 import 'package:doku/screens/settings/setting_screen.dart';
 import 'package:doku/screens/transactions/create/expense_create_screen.dart';
 import 'package:doku/screens/transactions/create/income_create_screen.dart';
-import 'package:doku/screens/transactions/create/option_create_screen.dart';
 import 'package:doku/screens/transactions/expense_screen.dart';
 import 'package:doku/screens/transactions/income_screen.dart';
 import 'package:doku/utils/currency_format.dart';
@@ -70,10 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (builder) {
-                      return OptionCreateScreen();
-                    }));
+                    _optionTransactionDialog();
                   },
                   child: Container(
                     padding: EdgeInsets.all(3),
@@ -125,9 +121,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   onTap: () {
                     _scaffoldKey.currentState?.openEndDrawer();
                     _optionTransactionDialog();
-                    // Navigator.push(context, MaterialPageRoute(builder: (builder){
-                    //   return const OptionCreateScreen();
-                    // }));
                   },
                   leading: const Icon(Icons.add_circle),
                   title: const Text("Tambah Transaksi")),
@@ -169,16 +162,18 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             CustomScrollView(
                 // controller: _scrollController,
-                physics: BouncingScrollPhysics(),
+                physics: const BouncingScrollPhysics(),
                 slivers: [
                   SliverList(
                       delegate: SliverChildListDelegate([
                     Container(
-                      margin: EdgeInsets.only(
+                      margin: const EdgeInsets.only(
                           left: 15, right: 15, top: 15, bottom: 5),
                       child: CarouselSlider(
                         options: CarouselOptions(
                             autoPlay: true,
+                            autoPlayAnimationDuration:
+                                const Duration(milliseconds: 1000),
                             aspectRatio: 2,
                             enlargeCenterPage: true,
                             viewportFraction: 1),
@@ -192,7 +187,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Stack(
                               children: [
                                 Container(
-                                  padding: EdgeInsets.only(left: 5),
+                                  padding: const EdgeInsets.only(left: 5),
                                   child: Icon(
                                     Icons.payment,
                                     size: 200,
@@ -201,27 +196,27 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                 ),
                                 Container(
-                                    padding:
-                                        EdgeInsets.only(right: 15, bottom: 10),
+                                    padding: const EdgeInsets.only(
+                                        right: 15, bottom: 10),
                                     alignment: Alignment.bottomRight,
                                     child: Text(
                                       currencyId.format(200000),
                                       textAlign: TextAlign.end,
                                       softWrap: true,
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           color: Colors.white,
                                           fontWeight: FontWeight.bold,
-                                          fontSize: 25),
+                                          fontSize: 30),
                                     )),
                                 Container(
-                                  padding: EdgeInsets.all(10),
+                                  padding: const EdgeInsets.all(10),
                                   alignment: Alignment.topLeft,
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
-                                    children: [
+                                    children: const [
                                       Text(
-                                        'Total Pemasukan',
+                                        'Total Pemasukan \nMaret 2022',
                                         style: TextStyle(
                                             color: Colors.white,
                                             fontWeight: FontWeight.bold,
@@ -246,7 +241,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Stack(
                               children: [
                                 Container(
-                                  padding: EdgeInsets.only(left: 5),
+                                  padding: const EdgeInsets.only(left: 5),
                                   child: Icon(
                                     Icons.payment,
                                     size: 200,
@@ -255,17 +250,17 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                 ),
                                 Container(
-                                    padding:
-                                        EdgeInsets.only(right: 15, bottom: 10),
+                                    padding: const EdgeInsets.only(
+                                        right: 15, bottom: 10),
                                     alignment: Alignment.bottomRight,
                                     child: Text(
                                       currencyId.format(200000),
                                       textAlign: TextAlign.end,
                                       softWrap: true,
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           color: Colors.white,
                                           fontWeight: FontWeight.bold,
-                                          fontSize: 25),
+                                          fontSize: 30),
                                     )),
                                 Container(
                                   padding: EdgeInsets.all(10),
@@ -275,7 +270,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        'Total Pengeluaran',
+                                        'Total Pengeluaran \nMaret 2022',
                                         style: TextStyle(
                                             color: Colors.white,
                                             fontWeight: FontWeight.bold,

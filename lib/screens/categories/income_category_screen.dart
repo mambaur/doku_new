@@ -22,7 +22,7 @@ class _IncomeCategoryScreenState extends State<IncomeCategoryScreen> {
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return ListView.separated(
-                  physics: BouncingScrollPhysics(),
+                  physics: const BouncingScrollPhysics(),
                   itemBuilder: (context, index) {
                     return Container(
                         child: Row(children: [
@@ -59,7 +59,7 @@ class _IncomeCategoryScreenState extends State<IncomeCategoryScreen> {
                     ]));
                   },
                   separatorBuilder: (context, index) {
-                    return Divider(
+                    return const Divider(
                       height: 1,
                       thickness: 0.7,
                     );

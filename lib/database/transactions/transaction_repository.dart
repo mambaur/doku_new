@@ -1,4 +1,5 @@
 import 'package:doku/database/database_instance.dart';
+import 'package:doku/models/category_model.dart';
 import 'package:doku/models/transaction_model.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -11,16 +12,32 @@ class TransactionRepository {
     return await db.insert(dbInstance.transactionTable, row);
   }
 
-  Future<List<TransactionModel>> all() async {
+  Future<List<TransactionModel>> all({String? type}) async {
     Database db = await dbInstance.database;
-    final data = await db.query(
-      dbInstance.transactionTable,
-      orderBy: 'id desc',
-      // where: type != null ? '"type" = ?' : null,
-      // whereArgs: type != null ? [type] : null
-    );
-    List<TransactionModel> listTransactions =
-        data.map((e) => TransactionModel.fromJson(e)).toList();
+    String whereType = type != null
+        ? 'AND ${dbInstance.categoryTable}.${dbInstance.categoryType}="$type"'
+        : '';
+    final data = await db.rawQuery(
+        'SELECT ${dbInstance.transactionTable}.*, ${dbInstance.categoryTable}.${dbInstance.categoryName}, ${dbInstance.categoryTable}.${dbInstance.categoryType}, ${dbInstance.categoryTable}.${dbInstance.categoryDescription} FROM ${dbInstance.transactionTable} JOIN ${dbInstance.categoryTable} ON ${dbInstance.categoryTable}.${dbInstance.categoryId}=${dbInstance.transactionTable}.${dbInstance.transactionCategoryId} WHERE ${dbInstance.transactionTable}.${dbInstance.transactionDate} >= "2022-05-01" AND ${dbInstance.transactionTable}.${dbInstance.transactionDate} <= "2022-05-31" $whereType ORDER BY ${dbInstance.transactionTable}.${dbInstance.transactionId} DESC',
+        []);
+
+    List<TransactionModel> listTransactions = [];
+    if (data.isNotEmpty) {
+      for (var i = 0; i < data.length; i++) {
+        TransactionModel transactionModel = TransactionModel(
+            id: int.parse(data[i]['id'].toString()),
+            nominal: int.parse(data[i]['nominal'].toString()),
+            date: data[i]['date'].toString(),
+            notes: data[i]['notes'].toString(),
+            category: CategoryModel(
+              id: int.parse(data[i]['category_id'].toString()),
+              name: data[i]['name'].toString(),
+              description: data[i]['description'].toString(),
+            ));
+        listTransactions.add(transactionModel);
+      }
+    }
+
     return listTransactions;
   }
 
