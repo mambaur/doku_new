@@ -26,38 +26,44 @@ class _ExpenseCategoryScreenState extends State<ExpenseCategoryScreen> {
                   physics: BouncingScrollPhysics(),
                   itemBuilder: (context, index) {
                     return Container(
+                        padding: EdgeInsets.symmetric(vertical: 10),
                         child: Row(children: [
-                      SizedBox(
-                        width: 15,
-                      ),
-                      Expanded(
-                          child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(snapshot.data![index].name ?? ''),
-                          snapshot.data![index].description != null &&
-                                  snapshot.data![index].description != ''
-                              ? Text(
-                                  snapshot.data![index].description ?? '',
-                                  style: TextStyle(
-                                      color: Colors.grey, fontSize: 12),
-                                )
-                              : Container(),
-                        ],
-                      )),
-                      IconButton(
-                          onPressed: () {
-                            widget.onEdit!(snapshot.data![index]);
-                          },
-                          icon: Icon(Icons.edit_outlined,
-                              color: Colors.black.withOpacity(0.4))),
-                      IconButton(
-                          onPressed: () {
-                            _deleteDialog(snapshot.data![index]);
-                          },
-                          icon: Icon(Icons.delete_outlined,
-                              color: Colors.black.withOpacity(0.4))),
-                    ]));
+                          SizedBox(
+                            width: 15,
+                          ),
+                          Expanded(
+                              child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                snapshot.data![index].name ?? '',
+                              ),
+                              snapshot.data![index].description != null &&
+                                      snapshot.data![index].description != ''
+                                  ? Container(
+                                      margin: EdgeInsets.only(top: 3),
+                                      child: Text(
+                                        snapshot.data![index].description ?? '',
+                                        style: TextStyle(
+                                            color: Colors.grey, fontSize: 12),
+                                      ),
+                                    )
+                                  : Container(),
+                            ],
+                          )),
+                          IconButton(
+                              onPressed: () {
+                                widget.onEdit!(snapshot.data![index]);
+                              },
+                              icon: Icon(Icons.edit_outlined,
+                                  color: Colors.black.withOpacity(0.4))),
+                          IconButton(
+                              onPressed: () {
+                                _deleteDialog(snapshot.data![index]);
+                              },
+                              icon: Icon(Icons.delete_outlined,
+                                  color: Colors.black.withOpacity(0.4))),
+                        ]));
                   },
                   separatorBuilder: (context, index) {
                     return Divider(

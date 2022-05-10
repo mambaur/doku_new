@@ -7,7 +7,9 @@ import 'package:doku/utils/currency_format.dart';
 import 'package:doku/utils/date_instance.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_overlay_loader/flutter_overlay_loader.dart';
+import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:pattern_formatter/numeric_formatter.dart';
 
 class IncomeCreateScreen extends StatefulWidget {
   const IncomeCreateScreen({Key? key}) : super(key: key);
@@ -63,7 +65,7 @@ class _IncomeCreateScreenState extends State<IncomeCreateScreen> {
   Future storeTransaction() async {
     await Future.delayed(const Duration(seconds: 1));
     TransactionModel transactionModel = TransactionModel(
-        nominal: int.parse(_nominalController.text),
+        nominal: int.parse(CurrencyFormat.toNumber(_nominalController.text)),
         categoryId: selectedCategory!.id,
         date: _dateController.text,
         notes: _notesController.text,
@@ -158,6 +160,11 @@ class _IncomeCreateScreenState extends State<IncomeCreateScreen> {
                             }
                             return null;
                           },
+                          inputFormatters: [
+                            ThousandsFormatter(
+                                allowFraction: false,
+                                formatter: NumberFormat.decimalPattern('id'))
+                          ],
                           keyboardType: TextInputType.number,
                           decoration: const InputDecoration(
                             contentPadding: EdgeInsets.all(5),
@@ -256,7 +263,7 @@ class _IncomeCreateScreenState extends State<IncomeCreateScreen> {
                         context: context,
                         type: CoolAlertType.success,
                         text:
-                            "Transaksi dengan kategori ${selectedCategory!.name} telah ditambahkan sebesar ${currencyId.format(int.parse(_nominalController.text))}.",
+                            "Transaksi dengan kategori ${selectedCategory!.name} telah ditambahkan sebesar ${currencyId.format(int.parse(CurrencyFormat.toNumber(_nominalController.text)))}.",
                       );
                       resetInput();
                     }

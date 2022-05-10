@@ -1,5 +1,3 @@
-import 'package:doku/utils/date_instance.dart';
-
 class CategoryModel {
   int? id;
   String? name, description, type, createdAt, updatedAt;

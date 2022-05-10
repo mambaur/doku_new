@@ -1,5 +1,20 @@
 import 'package:intl/intl.dart';
 
+const idMonths = [
+  "Januari",
+  "Februari",
+  "Maret",
+  "April",
+  "Mei",
+  "Juni",
+  "Juli",
+  "Agustus",
+  "September",
+  "Oktober",
+  "November",
+  "Desember"
+];
+
 class DateInstance {
   /// DateFormat now in string
   ///
@@ -23,21 +38,6 @@ class DateInstance {
   ///
   /// Ex. 2022-01-01
   static String id(String date) {
-    var idMonths = [
-      "Januari",
-      "Februari",
-      "Maret",
-      "April",
-      "Mei",
-      "Juni",
-      "Juli",
-      "Agustus",
-      "September",
-      "Oktober",
-      "November",
-      "Desember"
-    ];
-
     List<String> listDates = date.split("-");
     return listDates[2] +
         " " +

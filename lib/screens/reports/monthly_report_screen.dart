@@ -1,4 +1,7 @@
+import 'package:doku/database/transactions/transaction_repository.dart';
+import 'package:doku/models/transaction_model.dart';
 import 'package:doku/utils/currency_format.dart';
+import 'package:doku/utils/date_instance.dart';
 import 'package:flutter/material.dart';
 
 class MonthlyReportScreen extends StatefulWidget {
@@ -9,17 +12,33 @@ class MonthlyReportScreen extends StatefulWidget {
 }
 
 class _MonthlyReportScreenState extends State<MonthlyReportScreen> {
+  final TransactionRepository _transactionRepo = TransactionRepository();
+
+  List<int> listYears = [2022, 2023, 2024, 2025];
+
+  String selectedMonth = 'Januari';
+  int selectedYear = 2021;
+
+  DateTime now = DateTime.now();
+
+  @override
+  void initState() {
+    selectedYear = now.year;
+    selectedMonth = idMonths[now.month - 1];
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Laporan Bulanan'),
+        title: const Text('Laporan Bulanan'),
         centerTitle: true,
         elevation: 0,
       ),
       body: CustomScrollView(
           // controller: _scrollController,
-          physics: BouncingScrollPhysics(),
+          physics: const BouncingScrollPhysics(),
           slivers: [
             SliverAppBar(
               floating: true,
@@ -30,7 +49,7 @@ class _MonthlyReportScreenState extends State<MonthlyReportScreen> {
                   Expanded(
                     child: DropdownButton<String>(
                       isExpanded: true,
-                      value: 'Mei',
+                      value: selectedMonth,
                       icon: const Icon(Icons.arrow_drop_down),
                       elevation: 1,
                       style: TextStyle(color: Colors.black.withOpacity(0.8)),
@@ -40,10 +59,10 @@ class _MonthlyReportScreenState extends State<MonthlyReportScreen> {
                       ),
                       onChanged: (String? newValue) {
                         setState(() {
-                          // dropdownValue = newValue!;
+                          selectedMonth = newValue!;
                         });
                       },
-                      items: <String>['Mei', 'Senin']
+                      items: idMonths
                           .map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
@@ -56,9 +75,9 @@ class _MonthlyReportScreenState extends State<MonthlyReportScreen> {
                     width: 5,
                   ),
                   Expanded(
-                    child: DropdownButton<String>(
+                    child: DropdownButton<int>(
                       isExpanded: true,
-                      value: '2022',
+                      value: selectedYear,
                       icon: const Icon(Icons.arrow_drop_down),
                       elevation: 1,
                       style: TextStyle(color: Colors.black.withOpacity(0.8)),
@@ -66,16 +85,15 @@ class _MonthlyReportScreenState extends State<MonthlyReportScreen> {
                         height: 1,
                         color: Colors.black.withOpacity(0.8),
                       ),
-                      onChanged: (String? newValue) {
+                      onChanged: (int? newValue) {
                         setState(() {
-                          // dropdownValue = newValue!;
+                          selectedYear = newValue!;
                         });
                       },
-                      items: <String>['2022', 'Senin']
-                          .map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
+                      items: listYears.map<DropdownMenuItem<int>>((int value) {
+                        return DropdownMenuItem<int>(
                           value: value,
-                          child: Text(value),
+                          child: Text(value.toString()),
                         );
                       }).toList(),
                     ),
@@ -85,92 +103,98 @@ class _MonthlyReportScreenState extends State<MonthlyReportScreen> {
             ),
             SliverList(
                 delegate: SliverChildListDelegate([
-              ListView.builder(
-                  physics: BouncingScrollPhysics(),
-                  padding: EdgeInsets.symmetric(vertical: 10),
-                  shrinkWrap: true,
-                  itemCount: 10,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      color: Colors.white,
-                      margin: EdgeInsets.only(bottom: 10),
-                      padding: EdgeInsets.all(15),
-                      child: Column(
-                        children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.date_range,
-                                size: 18,
-                              ),
-                              SizedBox(
-                                width: 3,
-                              ),
-                              Text('Rabu, 04 Mei 2022'),
-                              Spacer(),
-                              Row(
+              FutureBuilder<List<GroupingTransactionModel>>(
+                  future: _transactionRepo.monthlyTransactions(
+                      month: (idMonths.indexOf(selectedMonth) + 1)
+                          .toString()
+                          .padLeft(2, '0'),
+                      year: selectedYear),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return ListView.builder(
+                          physics: BouncingScrollPhysics(),
+                          padding: EdgeInsets.symmetric(vertical: 10),
+                          shrinkWrap: true,
+                          itemCount: snapshot.data!.length,
+                          itemBuilder: (context, index) {
+                            return Container(
+                              color: Colors.white,
+                              margin: EdgeInsets.only(bottom: 10),
+                              padding: EdgeInsets.all(15),
+                              child: Column(
                                 children: [
-                                  Icon(
-                                    Icons.edit,
-                                    size: 18,
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.date_range,
+                                        size: 18,
+                                      ),
+                                      SizedBox(
+                                        width: 3,
+                                      ),
+                                      Text(snapshot.data![index].date ?? ''),
+                                      Spacer(),
+                                      Row(
+                                        children: [
+                                          Icon(
+                                            Icons.edit,
+                                            size: 18,
+                                          ),
+                                          SizedBox(
+                                            width: 3,
+                                          ),
+                                          Text('Ubah Transaksi')
+                                        ],
+                                      ),
+                                    ],
                                   ),
-                                  SizedBox(
-                                    width: 3,
+                                  Divider(
+                                    thickness: 1,
                                   ),
-                                  Text('Ubah Transaksi')
+                                  for (TransactionModel item in snapshot
+                                      .data![index].listTransactions!)
+                                    ListTile(
+                                      contentPadding: EdgeInsets.zero,
+                                      title: Text(
+                                          '${item.category!.name}, ${(item.category!.type == "income" ? "Pemasukan" : "Pengeluaran")}',
+                                          style: const TextStyle(fontSize: 14)),
+                                      subtitle: item.notes != null
+                                          ? Text(item.notes ?? '')
+                                          : null,
+                                      dense: true,
+                                      trailing: Container(
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: 5, horizontal: 10),
+                                        decoration: BoxDecoration(
+                                            color:
+                                                item.category!.type == "income"
+                                                    ? Colors.green.shade400
+                                                    : Colors.orange.shade400,
+                                            borderRadius:
+                                                BorderRadius.circular(15)),
+                                        child: Text(
+                                          currencyId.format(item.nominal),
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 14),
+                                        ),
+                                      ),
+                                    )
                                 ],
                               ),
-                            ],
-                          ),
-                          Divider(
-                            thickness: 1,
-                          ),
-                          ListTile(
-                            contentPadding: EdgeInsets.zero,
-                            title: Text('Gaji Bulanan, Pemasukan',
-                                style: TextStyle(fontSize: 14)),
-                            subtitle: Text('Bulanan THR'),
-                            dense: true,
-                            trailing: Container(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 5, horizontal: 10),
-                              decoration: BoxDecoration(
-                                  color: Colors.green.shade400,
-                                  borderRadius: BorderRadius.circular(15)),
-                              child: Text(
-                                currencyId.format(1000000),
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14),
-                              ),
-                            ),
-                          ),
-                          ListTile(
-                            contentPadding: EdgeInsets.zero,
-                            title: Text('Gaji Bulanan, Pemasukan',
-                                style: TextStyle(fontSize: 14)),
-                            subtitle: Text('Bulanan THR'),
-                            dense: true,
-                            trailing: Container(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 5, horizontal: 10),
-                              decoration: BoxDecoration(
-                                  color: Colors.green.shade400,
-                                  borderRadius: BorderRadius.circular(15)),
-                              child: Text(
-                                currencyId.format(1000000),
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14),
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    );
+                            );
+                          });
+                    } else {
+                      return Center(
+                        child: CircularProgressIndicator(
+                          color: Colors.green.shade700,
+                          strokeWidth: 2,
+                        ),
+                      );
+                    }
                   })
             ])),
             SliverList(delegate: SliverChildListDelegate([])),

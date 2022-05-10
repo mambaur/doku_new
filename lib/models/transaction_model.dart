@@ -35,11 +35,18 @@ class TransactionModel {
     data['id'] = id;
     data['nominal'] = nominal;
     data['category_id'] = categoryId;
-    data['category'] = category != null ? category!.toJson() : null;
+    // data['category'] = category != null ? category!.toJson() : null;
     data['date'] = date;
     data['notes'] = notes;
     data['created_at'] = createdAt;
     data['updated_at'] = updatedAt;
     return data;
   }
+}
+
+class GroupingTransactionModel {
+  String? date;
+  List<TransactionModel>? listTransactions;
+
+  GroupingTransactionModel({this.date, this.listTransactions});
 }
