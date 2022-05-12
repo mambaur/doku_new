@@ -1,4 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:doku/database/transactions/transaction_repository.dart';
 import 'package:doku/screens/categories/category_screen.dart';
 import 'package:doku/screens/reports/all_report_screen.dart';
 import 'package:doku/screens/reports/annual_report_screen.dart';
@@ -10,6 +11,7 @@ import 'package:doku/screens/transactions/create/income_create_screen.dart';
 import 'package:doku/screens/transactions/expense_screen.dart';
 import 'package:doku/screens/transactions/income_screen.dart';
 import 'package:doku/utils/currency_format.dart';
+import 'package:doku/utils/date_instance.dart';
 import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:package_info_plus/package_info_plus.dart';
@@ -23,17 +25,101 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final TransactionRepository _transactionRepo = TransactionRepository();
   List<String> transactionPeriods = ['Mingguan', 'Bulanan', 'Tahunan', 'Semua'];
+  int totalIncome = 0;
+  int totalExpense = 0;
+  int totalBalance = 0;
+
+  List<String>? labelIncomeCharts;
+  List<int>? valueIncomeCharts;
+  List<String>? labelExpenseCharts;
+  List<int>? valueExpenseCharts;
 
   PackageInfo? packageInfo;
+  DateTime now = DateTime.now();
 
   Future getPackageInfo() async {
     packageInfo = await PackageInfo.fromPlatform();
   }
 
+  Future getTotalIncomeMonth({String? type, int? year, String? month}) async {
+    int? data = await _transactionRepo.totalTransaction(
+        type: type, year: year, month: month);
+    if (data != null) {
+      setState(() {
+        if (type == 'income') {
+          totalIncome = data;
+        } else {
+          totalExpense = data;
+        }
+      });
+    }
+  }
+
+  Future getBalance() async {
+    int? income = await _transactionRepo.totalTransaction(type: 'income');
+    int? expense = await _transactionRepo.totalTransaction(type: 'expense');
+    if (income != null && expense != null) {
+      setState(() {
+        totalBalance = income - expense;
+      });
+    }
+  }
+
+  Future chartData(int? month, int? year, {String? type}) async {
+    if (type == 'income') {
+      labelIncomeCharts = [];
+      valueIncomeCharts = [];
+    } else {
+      labelExpenseCharts = [];
+      valueExpenseCharts = [];
+    }
+
+    int limitChartMonth = 4;
+    int chartYear = now.year;
+    List<int> listMonth = [];
+    List<int> listYear = [];
+    for (var i = 0; i < limitChartMonth; i++) {
+      if (month == 0) {
+        month = 12;
+        chartYear = chartYear - 1;
+      }
+
+      // code here
+      if (type == 'income') {
+        int? valueIncome = await _transactionRepo.totalTransaction(
+            type: type, year: year, month: month.toString().padLeft(2, '0'));
+        labelIncomeCharts!.add(idMonths[month! - 1]);
+        valueIncomeCharts!.add(valueIncome!);
+      } else {
+        int? valueExpense = await _transactionRepo.totalTransaction(
+            type: type, year: year, month: month.toString().padLeft(2, '0'));
+        labelExpenseCharts!.add(idMonths[month! - 1]);
+        valueExpenseCharts!.add(valueExpense!);
+      }
+
+      // listMonth.add(month);
+      // listYear.add(chartYear);
+      month = month - 1;
+    }
+    setState(() {});
+  }
+
   @override
   void initState() {
     getPackageInfo();
+    getTotalIncomeMonth(
+        type: 'income',
+        year: now.year,
+        month: (now.month).toString().padLeft(2, '0'));
+    getTotalIncomeMonth(
+        type: 'expense',
+        year: now.year,
+        month: (now.month).toString().padLeft(2, '0'));
+    getBalance();
+    chartData(now.month, now.year, type: 'income');
+    chartData(now.month, now.year, type: 'expense');
     super.initState();
   }
 
@@ -60,7 +146,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       color: Colors.green.shade400,
                       borderRadius: BorderRadius.circular(15)),
                   child: Text(
-                    currencyId.format(100000),
+                    currencyId.format(totalBalance),
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -69,7 +155,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    _optionTransactionDialog();
+                    // getBalance();
+                    chartData(1, 2022);
+                    // _optionTransactionDialog();
                   },
                   child: Container(
                     padding: EdgeInsets.all(3),
@@ -200,7 +288,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         right: 15, bottom: 10),
                                     alignment: Alignment.bottomRight,
                                     child: Text(
-                                      currencyId.format(200000),
+                                      currencyId.format(totalIncome),
                                       textAlign: TextAlign.end,
                                       softWrap: true,
                                       style: const TextStyle(
@@ -214,9 +302,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
-                                    children: const [
+                                    children: [
                                       Text(
-                                        'Total Pemasukan \nMaret 2022',
+                                        'Total Pemasukan \n${idMonths[now.month - 1]} ${now.year}',
                                         style: TextStyle(
                                             color: Colors.white,
                                             fontWeight: FontWeight.bold,
@@ -254,7 +342,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         right: 15, bottom: 10),
                                     alignment: Alignment.bottomRight,
                                     child: Text(
-                                      currencyId.format(200000),
+                                      currencyId.format(totalExpense),
                                       textAlign: TextAlign.end,
                                       softWrap: true,
                                       style: const TextStyle(
@@ -270,7 +358,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        'Total Pengeluaran \nMaret 2022',
+                                        'Total Pengeluaran \n${idMonths[now.month - 1]} ${now.year}',
                                         style: TextStyle(
                                             color: Colors.white,
                                             fontWeight: FontWeight.bold,
@@ -305,6 +393,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text('Transaksi Terakhir'),
+                                    SizedBox(
+                                      height: 5,
+                                    ),
                                     Container(
                                       alignment: Alignment.center,
                                       height: 30,
@@ -330,6 +421,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text('Pengaturan'),
+                                    SizedBox(
+                                      height: 5,
+                                    ),
                                     GestureDetector(
                                       onTap: () {
                                         Navigator.push(context,
@@ -384,10 +478,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       delegate: SliverChildListDelegate([
                     Container(
                         margin: EdgeInsets.only(
-                            left: 15, right: 15, bottom: 10, top: 5),
-                        child: Text('Periode Transaksi')),
+                            left: 15, right: 15, bottom: 10, top: 10),
+                        child: Text('Periode Transaksi',
+                            style: TextStyle(fontWeight: FontWeight.bold))),
                     Container(
-                      height: 34,
+                      height: 40,
                       child: ListView.builder(
                           physics: BouncingScrollPhysics(),
                           shrinkWrap: true,
@@ -414,14 +509,14 @@ class _HomeScreenState extends State<HomeScreen> {
                               },
                               child: Container(
                                   alignment: Alignment.center,
-                                  margin: EdgeInsets.only(right: 5),
+                                  margin: EdgeInsets.only(right: 7),
                                   padding: EdgeInsets.symmetric(
-                                      vertical: 3, horizontal: 15),
+                                      vertical: 10, horizontal: 20),
                                   decoration: BoxDecoration(
                                       color: Colors.white,
                                       border: Border.all(
                                           color: Colors.grey.shade200),
-                                      borderRadius: BorderRadius.circular(15)),
+                                      borderRadius: BorderRadius.circular(20)),
                                   child: Text(transactionPeriods[index])),
                             );
                           }),
@@ -434,8 +529,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     Container(
                         margin: EdgeInsets.only(
-                            left: 15, right: 15, top: 5, bottom: 5),
-                        child: Text('Grafik Pemasukan')),
+                            left: 15, right: 15, top: 10, bottom: 5),
+                        child: Text('Grafik Pemasukan',
+                            style: TextStyle(fontWeight: FontWeight.bold))),
                     Container(
                         margin: EdgeInsets.only(left: 15, right: 15),
                         width: MediaQuery.of(context).size.width,
@@ -444,7 +540,12 @@ class _HomeScreenState extends State<HomeScreen> {
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(10)),
                         height: 200,
-                        child: SimpleBarChart.withSampleData())
+                        child: valueIncomeCharts != null
+                            ? SimpleBarChart.withSampleData(
+                                labelIncomeCharts!.reversed.toList(),
+                                valueIncomeCharts!.reversed.toList(),
+                                'income')
+                            : Container())
                   ])),
                   SliverList(
                       delegate: SliverChildListDelegate([
@@ -453,8 +554,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     Container(
                         margin: EdgeInsets.only(
-                            left: 15, right: 15, top: 5, bottom: 5),
-                        child: Text('Grafik Pengeluaran')),
+                            left: 15, right: 15, top: 10, bottom: 5),
+                        child: Text(
+                          'Grafik Pengeluaran',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        )),
                     Container(
                         margin: EdgeInsets.only(left: 15, right: 15),
                         width: MediaQuery.of(context).size.width,
@@ -463,7 +567,12 @@ class _HomeScreenState extends State<HomeScreen> {
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(10)),
                         height: 200,
-                        child: SimpleBarChart.withSampleData())
+                        child: valueExpenseCharts != null
+                            ? SimpleBarChart.withSampleData(
+                                labelExpenseCharts!.reversed.toList(),
+                                valueExpenseCharts!.reversed.toList(),
+                                'expense')
+                            : Container())
                   ])),
                   SliverList(
                       delegate: SliverChildListDelegate([
@@ -471,8 +580,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       height: 15,
                     ),
                     Container(
-                        margin: EdgeInsets.only(left: 15, right: 15, top: 5),
-                        child: Text('Lihat Transaksiku')),
+                        margin: EdgeInsets.only(left: 15, right: 15, top: 10),
+                        child: Text('Lihat Transaksiku',
+                            style: TextStyle(fontWeight: FontWeight.bold))),
                     Container(
                       margin: EdgeInsets.only(
                           top: 10, bottom: 10, left: 15, right: 5),
@@ -528,7 +638,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 height: MediaQuery.of(context).size.height,
                 alignment: Alignment.bottomCenter,
                 child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 15),
+                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                   margin: EdgeInsets.only(bottom: 15),
                   decoration: BoxDecoration(
                       color: Colors.green.shade400,
@@ -605,35 +715,38 @@ class SimpleBarChart extends StatelessWidget {
   SimpleBarChart(this.seriesList, {this.animate});
 
   /// Creates a [BarChart] with sample data and no transition.
-  factory SimpleBarChart.withSampleData() {
-    return new SimpleBarChart(
-      _createSampleData(),
+  factory SimpleBarChart.withSampleData(
+      List<String> labels, List<int> values, String type) {
+    return SimpleBarChart(
+      _createSampleData(labels, values, type),
       // Disable animations for image tests.
-      animate: false,
+      animate: true,
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return new charts.BarChart(
+    return charts.BarChart(
       seriesList,
-      animate: animate,
+      animate: animate ?? true,
     );
   }
 
   /// Create one series with sample hard coded data.
-  static List<charts.Series<OrdinalSales, String>> _createSampleData() {
-    final data = [
-      new OrdinalSales('2014', 5),
-      new OrdinalSales('2015', 25),
-      new OrdinalSales('2016', 100),
-      new OrdinalSales('2017', 75),
-    ];
+  static List<charts.Series<OrdinalSales, String>> _createSampleData(
+      List<String> labels, List<int> values, String type) {
+    List<OrdinalSales> data = [];
+    if (labels.isNotEmpty) {
+      for (var i = 0; i < labels.length; i++) {
+        data.add(OrdinalSales(labels[i], values[i]));
+      }
+    }
 
     return [
-      new charts.Series<OrdinalSales, String>(
+      charts.Series<OrdinalSales, String>(
         id: 'Sales',
-        colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
+        seriesColor: charts.ColorUtil.fromDartColor(
+            type == 'income' ? Colors.green.shade400 : Colors.orange.shade400),
         domainFn: (OrdinalSales sales, _) => sales.year,
         measureFn: (OrdinalSales sales, _) => sales.sales,
         data: data,

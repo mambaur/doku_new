@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.doku">
    <application
-        android:label="doku"
+        android:label="Dompet Saku"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

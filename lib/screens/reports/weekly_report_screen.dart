@@ -64,7 +64,7 @@ class _WeeklyReportScreenState extends State<WeeklyReportScreen> {
               // forceElevated: true,
               floating: true,
               automaticallyImplyLeading: false,
-              elevation: 1,
+              elevation: 0.5,
               title: Row(
                 children: [
                   Expanded(
@@ -184,7 +184,8 @@ class _WeeklyReportScreenState extends State<WeeklyReportScreen> {
                                       SizedBox(
                                         width: 3,
                                       ),
-                                      Text(snapshot.data![index].date ?? ''),
+                                      Text(DateInstance.id(
+                                          snapshot.data![index].date!)),
                                       Spacer(),
                                       Row(
                                         children: [

@@ -60,7 +60,9 @@ class _IncomeScreenState extends State<IncomeScreen> {
                                 ),
                                 Text(
                                   snapshot.data![index].category!.name ?? '',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16),
                                 ),
                                 SizedBox(
                                   height: 3,

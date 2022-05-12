@@ -23,7 +23,7 @@ class TransactionRepository {
         ? 'AND ${dbInstance.categoryTable}.${dbInstance.categoryType}="$type"'
         : '';
     final data = await db.rawQuery(
-        'SELECT ${dbInstance.transactionTable}.*, ${dbInstance.categoryTable}.${dbInstance.categoryName}, ${dbInstance.categoryTable}.${dbInstance.categoryType}, ${dbInstance.categoryTable}.${dbInstance.categoryDescription} FROM ${dbInstance.transactionTable} JOIN ${dbInstance.categoryTable} ON ${dbInstance.categoryTable}.${dbInstance.categoryId}=${dbInstance.transactionTable}.${dbInstance.transactionCategoryId} $whereType ORDER BY ${dbInstance.transactionTable}.${dbInstance.transactionId} DESC LIMIT $limit OFFSET $offset',
+        'SELECT ${dbInstance.transactionTable}.*, ${dbInstance.categoryTable}.${dbInstance.categoryName}, ${dbInstance.categoryTable}.${dbInstance.categoryType}, ${dbInstance.categoryTable}.${dbInstance.categoryDescription} FROM ${dbInstance.transactionTable} JOIN ${dbInstance.categoryTable} ON ${dbInstance.categoryTable}.${dbInstance.categoryId}=${dbInstance.transactionTable}.${dbInstance.transactionCategoryId} $whereType ORDER BY ${dbInstance.transactionTable}.${dbInstance.transactionDate} DESC LIMIT $limit OFFSET $offset',
         []);
 
     List<TransactionModel> listTransactions = [];
@@ -87,7 +87,7 @@ class TransactionRepository {
 
     Database db = await dbInstance.database;
     final data = await db.rawQuery(
-        'SELECT ${dbInstance.transactionTable}.* FROM ${dbInstance.transactionTable} JOIN ${dbInstance.categoryTable} ON ${dbInstance.categoryTable}.${dbInstance.categoryId}=${dbInstance.transactionTable}.${dbInstance.transactionCategoryId} WHERE ${dbInstance.transactionTable}.${dbInstance.transactionDate} >= "$year-$month-$startDay" AND ${dbInstance.transactionTable}.${dbInstance.transactionDate} <= "$year-$month-$endDay" GROUP BY ${dbInstance.transactionTable}.${dbInstance.transactionDate} ORDER BY ${dbInstance.transactionTable}.${dbInstance.transactionId} DESC LIMIT $limit OFFSET $offset',
+        'SELECT ${dbInstance.transactionTable}.* FROM ${dbInstance.transactionTable} JOIN ${dbInstance.categoryTable} ON ${dbInstance.categoryTable}.${dbInstance.categoryId}=${dbInstance.transactionTable}.${dbInstance.transactionCategoryId} WHERE ${dbInstance.transactionTable}.${dbInstance.transactionDate} >= "$year-$month-$startDay" AND ${dbInstance.transactionTable}.${dbInstance.transactionDate} <= "$year-$month-$endDay" GROUP BY ${dbInstance.transactionTable}.${dbInstance.transactionDate} ORDER BY ${dbInstance.transactionTable}.${dbInstance.transactionDate} DESC LIMIT $limit OFFSET $offset',
         []);
 
     List<GroupingTransactionModel> listGroupTransactions = [];
@@ -112,7 +112,7 @@ class TransactionRepository {
 
     Database db = await dbInstance.database;
     final data = await db.rawQuery(
-        'SELECT ${dbInstance.transactionTable}.* FROM ${dbInstance.transactionTable} JOIN ${dbInstance.categoryTable} ON ${dbInstance.categoryTable}.${dbInstance.categoryId}=${dbInstance.transactionTable}.${dbInstance.transactionCategoryId} WHERE ${dbInstance.transactionTable}.${dbInstance.transactionDate} >= "$year-$month-01" AND ${dbInstance.transactionTable}.${dbInstance.transactionDate} <= "$year-$month-31" GROUP BY ${dbInstance.transactionTable}.${dbInstance.transactionDate} ORDER BY ${dbInstance.transactionTable}.${dbInstance.transactionId} DESC LIMIT $limit OFFSET $offset',
+        'SELECT ${dbInstance.transactionTable}.* FROM ${dbInstance.transactionTable} JOIN ${dbInstance.categoryTable} ON ${dbInstance.categoryTable}.${dbInstance.categoryId}=${dbInstance.transactionTable}.${dbInstance.transactionCategoryId} WHERE ${dbInstance.transactionTable}.${dbInstance.transactionDate} >= "$year-$month-01" AND ${dbInstance.transactionTable}.${dbInstance.transactionDate} <= "$year-$month-31" GROUP BY ${dbInstance.transactionTable}.${dbInstance.transactionDate} ORDER BY ${dbInstance.transactionTable}.${dbInstance.transactionDate} DESC LIMIT $limit OFFSET $offset',
         []);
 
     List<GroupingTransactionModel> listGroupTransactions = [];
@@ -127,6 +127,78 @@ class TransactionRepository {
       }
     }
     return listGroupTransactions;
+  }
+
+  Future<List<GroupingTransactionModel>> annualTransactions(
+      {int? year, int? limit, int? page}) async {
+    // Setup pagination
+    limit ??= 10;
+    int offset = (limit * (page ?? 1)) - limit;
+
+    Database db = await dbInstance.database;
+    final data = await db.rawQuery(
+        'SELECT ${dbInstance.transactionTable}.* FROM ${dbInstance.transactionTable} JOIN ${dbInstance.categoryTable} ON ${dbInstance.categoryTable}.${dbInstance.categoryId}=${dbInstance.transactionTable}.${dbInstance.transactionCategoryId} WHERE ${dbInstance.transactionTable}.${dbInstance.transactionDate} >= "$year-01-01" AND ${dbInstance.transactionTable}.${dbInstance.transactionDate} <= "$year-12-31" GROUP BY ${dbInstance.transactionTable}.${dbInstance.transactionDate} ORDER BY ${dbInstance.transactionTable}.${dbInstance.transactionDate} DESC LIMIT $limit OFFSET $offset',
+        []);
+
+    List<GroupingTransactionModel> listGroupTransactions = [];
+    if (data.isNotEmpty) {
+      for (var i = 0; i < data.length; i++) {
+        List<TransactionModel>? listTransactions =
+            await getTransactionDate(date: data[i]['date'].toString());
+
+        listGroupTransactions.add(GroupingTransactionModel(
+            date: data[i]['date'].toString(),
+            listTransactions: listTransactions));
+      }
+    }
+    return listGroupTransactions;
+  }
+
+  Future<List<GroupingTransactionModel>> allTransactions(
+      {int? limit, int? page}) async {
+    // Setup pagination
+    limit ??= 10;
+    int offset = (limit * (page ?? 1)) - limit;
+
+    Database db = await dbInstance.database;
+    final data = await db.rawQuery(
+        'SELECT ${dbInstance.transactionTable}.* FROM ${dbInstance.transactionTable} JOIN ${dbInstance.categoryTable} ON ${dbInstance.categoryTable}.${dbInstance.categoryId}=${dbInstance.transactionTable}.${dbInstance.transactionCategoryId} GROUP BY ${dbInstance.transactionTable}.${dbInstance.transactionDate} ORDER BY ${dbInstance.transactionTable}.${dbInstance.transactionDate} DESC LIMIT $limit OFFSET $offset',
+        []);
+
+    List<GroupingTransactionModel> listGroupTransactions = [];
+    if (data.isNotEmpty) {
+      for (var i = 0; i < data.length; i++) {
+        List<TransactionModel>? listTransactions =
+            await getTransactionDate(date: data[i]['date'].toString());
+
+        listGroupTransactions.add(GroupingTransactionModel(
+            date: data[i]['date'].toString(),
+            listTransactions: listTransactions));
+      }
+    }
+    return listGroupTransactions;
+  }
+
+  Future<int?> totalTransaction(
+      {String? month, int? year, String? type = "income"}) async {
+    String whereType = type != null
+        ? 'WHERE ${dbInstance.categoryTable}.${dbInstance.categoryType}="$type"'
+        : '';
+
+    String whereDate = '';
+    if (month != null && year != null && whereType != '') {
+      whereDate =
+          'AND ${dbInstance.transactionTable}.${dbInstance.transactionDate} >= "$year-$month-01" AND ${dbInstance.transactionTable}.${dbInstance.transactionDate} <= "$year-$month-31"';
+    }
+    Database db = await dbInstance.database;
+    final data = await db.rawQuery(
+        'SELECT SUM(${dbInstance.transactionTable}.${dbInstance.transactionNominal}) as total_income FROM ${dbInstance.transactionTable} JOIN ${dbInstance.categoryTable} ON ${dbInstance.categoryTable}.${dbInstance.categoryId}=${dbInstance.transactionTable}.${dbInstance.transactionCategoryId} $whereType $whereDate');
+    if (data.isNotEmpty) {
+      if (data[0]['total_income'] != null) {
+        return int.parse(data[0]['total_income'].toString());
+      }
+    }
+    return 0;
   }
 
   Future<int?> queryRowCount() async {

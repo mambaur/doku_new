@@ -43,7 +43,7 @@ class _MonthlyReportScreenState extends State<MonthlyReportScreen> {
             SliverAppBar(
               floating: true,
               automaticallyImplyLeading: false,
-              elevation: 1,
+              elevation: 0.5,
               title: Row(
                 children: [
                   Expanded(
@@ -134,7 +134,8 @@ class _MonthlyReportScreenState extends State<MonthlyReportScreen> {
                                       SizedBox(
                                         width: 3,
                                       ),
-                                      Text(snapshot.data![index].date ?? ''),
+                                      Text(DateInstance.id(
+                                          snapshot.data![index].date!)),
                                       Spacer(),
                                       Row(
                                         children: [
