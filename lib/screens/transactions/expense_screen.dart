@@ -1,5 +1,6 @@
 import 'package:doku/database/transactions/transaction_repository.dart';
 import 'package:doku/models/transaction_model.dart';
+import 'package:doku/screens/transactions/edit/edit_transaction_screen.dart';
 import 'package:doku/utils/currency_format.dart';
 import 'package:doku/utils/date_instance.dart';
 import 'package:flutter/material.dart';
@@ -33,10 +34,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
                   itemBuilder: (context, index) {
                     return GestureDetector(
                       onLongPress: () async {
-                        await _transactionRepo
-                            .delete(snapshot.data![index].id!);
-                        Fluttertoast.showToast(msg: 'Transaksi telah dihapus.');
-                        setState(() {});
+                        _optionEditDialog(snapshot.data![index]);
                       },
                       child: Container(
                         padding: const EdgeInsets.all(15),
@@ -92,6 +90,49 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
               );
             }
           }),
+    );
+  }
+
+  Future<void> _optionEditDialog(TransactionModel transactionModel) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                ListTile(
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (builder) {
+                      return EditTransactionScreen(
+                        transactionModel: transactionModel,
+                      );
+                    })).then((value) {
+                      setState(() {});
+                    });
+                  },
+                  title: Text('Ubah Transaksi'),
+                  trailing: Icon(Icons.chevron_right),
+                ),
+                ListTile(
+                  onTap: () async {
+                    await _transactionRepo.delete(transactionModel.id!);
+
+                    Navigator.pop(context);
+                    setState(() {});
+                    Fluttertoast.showToast(msg: 'Transaksi telah dihapus.');
+                  },
+                  title: Text('Hapus'),
+                  trailing: Icon(Icons.chevron_right),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

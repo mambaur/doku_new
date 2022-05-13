@@ -30,6 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int totalIncome = 0;
   int totalExpense = 0;
   int totalBalance = 0;
+  bool isShowChart = false;
 
   List<String>? labelIncomeCharts;
   List<int>? valueIncomeCharts;
@@ -78,8 +79,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
     int limitChartMonth = 4;
     int chartYear = now.year;
-    List<int> listMonth = [];
-    List<int> listYear = [];
     for (var i = 0; i < limitChartMonth; i++) {
       if (month == 0) {
         month = 12;
@@ -99,10 +98,9 @@ class _HomeScreenState extends State<HomeScreen> {
         valueExpenseCharts!.add(valueExpense!);
       }
 
-      // listMonth.add(month);
-      // listYear.add(chartYear);
       month = month - 1;
     }
+    isShowChart = true;
     setState(() {});
   }
 
@@ -155,9 +153,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    // getBalance();
-                    chartData(1, 2022);
-                    // _optionTransactionDialog();
+                    _optionTransactionDialog();
                   },
                   child: Container(
                     padding: EdgeInsets.all(3),
@@ -540,7 +536,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(10)),
                         height: 200,
-                        child: valueIncomeCharts != null
+                        child: isShowChart
                             ? SimpleBarChart.withSampleData(
                                 labelIncomeCharts!.reversed.toList(),
                                 valueIncomeCharts!.reversed.toList(),
@@ -567,7 +563,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(10)),
                         height: 200,
-                        child: valueExpenseCharts != null
+                        child: isShowChart
                             ? SimpleBarChart.withSampleData(
                                 labelExpenseCharts!.reversed.toList(),
                                 valueExpenseCharts!.reversed.toList(),

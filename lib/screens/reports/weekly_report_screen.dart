@@ -1,5 +1,6 @@
 import 'package:doku/database/transactions/transaction_repository.dart';
 import 'package:doku/models/transaction_model.dart';
+import 'package:doku/screens/transactions/edit/list_edit_transaction_screen.dart';
 import 'package:doku/utils/currency_format.dart';
 import 'package:doku/utils/date_instance.dart';
 import 'package:flutter/material.dart';
@@ -187,17 +188,30 @@ class _WeeklyReportScreenState extends State<WeeklyReportScreen> {
                                       Text(DateInstance.id(
                                           snapshot.data![index].date!)),
                                       Spacer(),
-                                      Row(
-                                        children: [
-                                          Icon(
-                                            Icons.edit,
-                                            size: 18,
-                                          ),
-                                          SizedBox(
-                                            width: 3,
-                                          ),
-                                          Text('Ubah Transaksi')
-                                        ],
+                                      GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(context,
+                                              MaterialPageRoute(
+                                                  builder: (builder) {
+                                            return ListEditTransactionScreen(
+                                              date: snapshot.data![index].date!,
+                                            );
+                                          })).then((value) {
+                                            setState(() {});
+                                          });
+                                        },
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              Icons.edit,
+                                              size: 18,
+                                            ),
+                                            SizedBox(
+                                              width: 3,
+                                            ),
+                                            Text('Ubah Transaksi')
+                                          ],
+                                        ),
                                       ),
                                     ],
                                   ),
