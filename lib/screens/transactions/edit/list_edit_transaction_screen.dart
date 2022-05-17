@@ -41,9 +41,9 @@ class _ListEditTransactionScreenState extends State<ListEditTransactionScreen> {
         actions: [
           IconButton(
               onPressed: () {
-                // _optionEditDialog();
+                _deleteAllDialog(widget.date ?? '');
               },
-              icon: Icon(Icons.delete))
+              icon: Icon(Icons.delete_outlined))
         ],
       ),
       body: CustomScrollView(
@@ -116,7 +116,12 @@ class _ListEditTransactionScreenState extends State<ListEditTransactionScreen> {
                                     currencyId.format(
                                         listTransactions![index].nominal),
                                     style: TextStyle(
-                                        color: Colors.green.shade500,
+                                        color: listTransactions![index]
+                                                    .category!
+                                                    .type ==
+                                                'income'
+                                            ? Colors.green.shade500
+                                            : Colors.orange.shade500,
                                         fontWeight: FontWeight.bold))
                               ],
                             ),
@@ -168,6 +173,38 @@ class _ListEditTransactionScreenState extends State<ListEditTransactionScreen> {
               ],
             ),
           ),
+        );
+      },
+    );
+  }
+
+  Future<void> _deleteAllDialog(String? date) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+              'Apakah kamu yakin ingin menghapus semua transaksi di tanggal $date?'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Batal'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Ya, Hapus'),
+              onPressed: () async {
+                await _transactionRepo.deleteByDate(date!);
+                setState(() {});
+                Fluttertoast.showToast(
+                    msg: 'Semua transaksi tanggal $date telah dihapus.');
+                Navigator.of(context).pop();
+                Navigator.pop(context);
+              },
+            ),
+          ],
         );
       },
     );

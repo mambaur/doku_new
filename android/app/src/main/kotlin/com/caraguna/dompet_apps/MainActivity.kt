@@ -1,4 +1,4 @@
-package com.example.doku
+package com.caraguna.dompet_apps
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -3,6 +3,7 @@ import 'package:doku/database/categories/category_repository.dart';
 import 'package:doku/database/transactions/transaction_repository.dart';
 import 'package:doku/models/category_model.dart';
 import 'package:doku/models/transaction_model.dart';
+import 'package:doku/screens/categories/category_screen.dart';
 import 'package:doku/utils/currency_format.dart';
 import 'package:doku/utils/date_instance.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +23,7 @@ class _ExpenseCreateScreenState extends State<ExpenseCreateScreen> {
   DateTime now = DateTime.now();
   DateTime dateTransaction = DateTime.now();
   List<CategoryModel> listCategories = [];
-  CategoryModel? selectedCategory = CategoryModel();
+  CategoryModel? selectedCategory;
   final CategoryRepository _categoryRepo = CategoryRepository();
   final TransactionRepository _transactionRepo = TransactionRepository();
   final TextEditingController _dateController = TextEditingController();
@@ -183,35 +184,59 @@ class _ExpenseCreateScreenState extends State<ExpenseCreateScreen> {
                               width: 15,
                             ),
                             Expanded(
-                              child: DropdownButton<CategoryModel?>(
-                                itemHeight: 70.0,
-                                value: selectedCategory,
-                                icon: const Icon(Icons.arrow_drop_down),
-                                elevation: 2,
-                                isExpanded: true,
-                                style: TextStyle(color: Colors.green.shade400),
-                                underline: Container(
-                                  height: 2,
-                                  color: Colors.green.shade400,
-                                ),
-                                onChanged: (CategoryModel? newValue) {
-                                  setState(() {
-                                    selectedCategory = newValue!;
-                                  });
-                                },
-                                items: listCategories
-                                    .map<DropdownMenuItem<CategoryModel?>>(
-                                        (CategoryModel? value) {
-                                  return DropdownMenuItem<CategoryModel?>(
-                                    value: value,
-                                    child: Text(
-                                      value != null ? value.name! : '',
-                                      style:
-                                          const TextStyle(color: Colors.black),
+                              child: selectedCategory != null
+                                  ? DropdownButton<CategoryModel?>(
+                                      itemHeight: 70.0,
+                                      value: selectedCategory,
+                                      icon: const Icon(Icons.arrow_drop_down),
+                                      elevation: 2,
+                                      isExpanded: true,
+                                      style: TextStyle(
+                                          color: Colors.green.shade400),
+                                      underline: Container(
+                                        height: 2,
+                                        color: Colors.green.shade400,
+                                      ),
+                                      onChanged: (CategoryModel? newValue) {
+                                        setState(() {
+                                          selectedCategory = newValue!;
+                                        });
+                                      },
+                                      items: listCategories.map<
+                                              DropdownMenuItem<CategoryModel?>>(
+                                          (CategoryModel? value) {
+                                        return DropdownMenuItem<CategoryModel?>(
+                                          value: value,
+                                          child: Text(
+                                            value != null ? value.name! : '',
+                                            style: const TextStyle(
+                                                color: Colors.black),
+                                          ),
+                                        );
+                                      }).toList(),
+                                    )
+                                  : GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            (MaterialPageRoute(
+                                                builder: (builder) {
+                                              return CategoryScreen(
+                                                initialIndex: 1,
+                                              );
+                                            }))).then((value) {
+                                          getCategory();
+                                        });
+                                      },
+                                      child: TextFormField(
+                                        enabled: false,
+                                        decoration: const InputDecoration(
+                                          hintText: 'Tambah kategori',
+                                          suffixIcon:
+                                              Icon(Icons.arrow_drop_down),
+                                        ),
+                                      ),
                                     ),
-                                  );
-                                }).toList(),
-                              ),
                             ),
                           ],
                         ),

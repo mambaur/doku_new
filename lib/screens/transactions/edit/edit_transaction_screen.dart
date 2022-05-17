@@ -55,6 +55,7 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
   }
 
   Future getCategory() async {
+    print(widget.transactionModel!.category!.type);
     List<CategoryModel>? data =
         await _categoryRepo.all(type: widget.transactionModel!.category!.type);
 

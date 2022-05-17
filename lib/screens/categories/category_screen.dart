@@ -7,7 +7,8 @@ import 'package:doku/utils/date_instance.dart';
 import 'package:flutter/material.dart';
 
 class CategoryScreen extends StatefulWidget {
-  const CategoryScreen({Key? key}) : super(key: key);
+  final int? initialIndex;
+  const CategoryScreen({Key? key, this.initialIndex}) : super(key: key);
 
   @override
   State<CategoryScreen> createState() => _CategoryScreenState();
@@ -55,6 +56,7 @@ class _CategoryScreenState extends State<CategoryScreen>
   @override
   void initState() {
     _tabController = TabController(vsync: this, length: 2);
+    _tabController!.animateTo(widget.initialIndex ?? 0);
     super.initState();
   }
 

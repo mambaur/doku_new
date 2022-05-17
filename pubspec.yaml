@@ -42,6 +42,9 @@ dependencies:
   flutter_overlay_loader: ^1.0.3
   fluttertoast: ^8.0.9
   pattern_formatter: ^2.0.0
+  url_launcher: ^6.1.2
+  google_mobile_ads: ^1.2.0
+  shared_preferences: ^2.0.15
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -51,6 +54,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  change_app_package_name: ^1.0.0
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

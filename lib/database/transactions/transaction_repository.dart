@@ -36,6 +36,7 @@ class TransactionRepository {
             notes: data[i]['notes'].toString(),
             category: CategoryModel(
               id: int.parse(data[i]['category_id'].toString()),
+              type: data[i]['type'].toString(),
               name: data[i]['name'].toString(),
               description: data[i]['description'].toString(),
             ));
@@ -201,6 +202,21 @@ class TransactionRepository {
     return 0;
   }
 
+  Future<TransactionModel?> latestTransaction() async {
+    Database db = await dbInstance.database;
+    final data = await db.rawQuery(
+        'SELECT ${dbInstance.transactionTable}.*, ${dbInstance.categoryTable}.${dbInstance.categoryName}, ${dbInstance.categoryTable}.${dbInstance.categoryType}, ${dbInstance.categoryTable}.${dbInstance.categoryDescription} FROM ${dbInstance.transactionTable} JOIN ${dbInstance.categoryTable} ON ${dbInstance.categoryTable}.${dbInstance.categoryId}=${dbInstance.transactionTable}.${dbInstance.transactionCategoryId} ORDER BY ${dbInstance.transactionTable}.${dbInstance.transactionDate} DESC LIMIT 1');
+    if (data.isNotEmpty) {
+      return TransactionModel(
+          id: int.parse(data[0]['id'].toString()),
+          nominal: int.parse(data[0]['nominal'].toString()),
+          category: CategoryModel(
+              name: data[0]['name'].toString(),
+              type: data[0]['type'].toString()));
+    }
+    return null;
+  }
+
   Future<int?> queryRowCount() async {
     Database db = await dbInstance.database;
     return Sqflite.firstIntValue(await db
@@ -218,5 +234,11 @@ class TransactionRepository {
     Database db = await dbInstance.database;
     return await db.delete(dbInstance.transactionTable,
         where: '${dbInstance.transactionId} = ?', whereArgs: [id]);
+  }
+
+  Future<int> deleteByDate(String date) async {
+    Database db = await dbInstance.database;
+    return await db.delete(dbInstance.transactionTable,
+        where: '${dbInstance.transactionDate} = ?', whereArgs: [date]);
   }
 }
