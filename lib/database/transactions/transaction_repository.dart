@@ -50,7 +50,7 @@ class TransactionRepository {
   Future<List<TransactionModel>> getTransactionDate({String? date}) async {
     Database db = await dbInstance.database;
     final data = await db.rawQuery(
-        'SELECT ${dbInstance.transactionTable}.*, ${dbInstance.categoryTable}.${dbInstance.categoryName}, ${dbInstance.categoryTable}.${dbInstance.categoryType}, ${dbInstance.categoryTable}.${dbInstance.categoryDescription} FROM ${dbInstance.transactionTable} JOIN ${dbInstance.categoryTable} ON ${dbInstance.categoryTable}.${dbInstance.categoryId}=${dbInstance.transactionTable}.${dbInstance.transactionCategoryId} WHERE ${dbInstance.transactionTable}.${dbInstance.transactionDate}="$date"',
+        'SELECT ${dbInstance.transactionTable}.*, ${dbInstance.categoryTable}.${dbInstance.categoryName}, ${dbInstance.categoryTable}.${dbInstance.categoryType}, ${dbInstance.categoryTable}.${dbInstance.categoryDescription} FROM ${dbInstance.transactionTable} JOIN ${dbInstance.categoryTable} ON ${dbInstance.categoryTable}.${dbInstance.categoryId}=${dbInstance.transactionTable}.${dbInstance.transactionCategoryId} WHERE ${dbInstance.transactionTable}.${dbInstance.transactionDate}="$date" ORDER BY ${dbInstance.transactionTable}.${dbInstance.transactionUpdatedAt} DESC',
         []);
 
     List<TransactionModel> listTransactions = [];
@@ -61,6 +61,8 @@ class TransactionRepository {
             nominal: int.parse(data[i]['nominal'].toString()),
             date: data[i]['date'].toString(),
             notes: data[i]['notes'].toString(),
+            createdAt: data[i]['created_at'].toString(),
+            updatedAt: data[i]['updated_at'].toString(),
             category: CategoryModel(
                 id: int.parse(data[i]['category_id'].toString()),
                 name: data[i]['name'].toString(),
@@ -205,7 +207,7 @@ class TransactionRepository {
   Future<TransactionModel?> latestTransaction() async {
     Database db = await dbInstance.database;
     final data = await db.rawQuery(
-        'SELECT ${dbInstance.transactionTable}.*, ${dbInstance.categoryTable}.${dbInstance.categoryName}, ${dbInstance.categoryTable}.${dbInstance.categoryType}, ${dbInstance.categoryTable}.${dbInstance.categoryDescription} FROM ${dbInstance.transactionTable} JOIN ${dbInstance.categoryTable} ON ${dbInstance.categoryTable}.${dbInstance.categoryId}=${dbInstance.transactionTable}.${dbInstance.transactionCategoryId} ORDER BY ${dbInstance.transactionTable}.${dbInstance.transactionDate} DESC LIMIT 1');
+        'SELECT ${dbInstance.transactionTable}.*, ${dbInstance.categoryTable}.${dbInstance.categoryName}, ${dbInstance.categoryTable}.${dbInstance.categoryType}, ${dbInstance.categoryTable}.${dbInstance.categoryDescription} FROM ${dbInstance.transactionTable} JOIN ${dbInstance.categoryTable} ON ${dbInstance.categoryTable}.${dbInstance.categoryId}=${dbInstance.transactionTable}.${dbInstance.transactionCategoryId} ORDER BY ${dbInstance.transactionTable}.${dbInstance.transactionUpdatedAt} DESC LIMIT 1');
     if (data.isNotEmpty) {
       return TransactionModel(
           id: int.parse(data[0]['id'].toString()),
@@ -215,6 +217,32 @@ class TransactionRepository {
               type: data[0]['type'].toString()));
     }
     return null;
+  }
+
+  Future<List<TransactionByCategory>?> getTransactionByCategory(
+      String? month, int? year,
+      {String type = 'expense'}) async {
+    Database db = await dbInstance.database;
+    final data = await db.rawQuery(
+        'SELECT SUM(${dbInstance.transactionTable}.${dbInstance.transactionNominal}) as total, ${dbInstance.categoryTable}.${dbInstance.categoryId}, ${dbInstance.categoryTable}.${dbInstance.categoryName}  FROM ${dbInstance.transactionTable} JOIN ${dbInstance.categoryTable} ON ${dbInstance.categoryTable}.${dbInstance.categoryId}=${dbInstance.transactionTable}.${dbInstance.transactionCategoryId} WHERE ${dbInstance.transactionTable}.${dbInstance.transactionDate} >= "$year-$month-01" AND ${dbInstance.transactionTable}.${dbInstance.transactionDate} <= "$year-$month-31" AND ${dbInstance.categoryTable}.${dbInstance.categoryType}="$type" GROUP BY ${dbInstance.categoryTable}.${dbInstance.categoryId} ORDER BY total DESC LIMIT 6',
+        []);
+
+    List<TransactionByCategory> result = [];
+    double total = 0;
+    for (var i = 0; i < data.length; i++) {
+      total += double.parse(data[i]['total'].toString());
+    }
+
+    for (var i = 0; i < data.length; i++) {
+      double totalNominal = double.parse(data[i]['total'].toString());
+      result.add(TransactionByCategory(
+          percent: totalNominal / total,
+          nominal: int.parse(data[i]['total'].toString()),
+          categoryModel: CategoryModel(
+              id: int.parse(data[i]['id'].toString()),
+              name: data[i]['name'].toString())));
+    }
+    return result;
   }
 
   Future<int?> queryRowCount() async {

@@ -1,3 +1,4 @@
+import 'package:cool_alert/cool_alert.dart';
 import 'package:doku/database/transactions/transaction_repository.dart';
 import 'package:doku/models/transaction_model.dart';
 import 'package:doku/screens/transactions/edit/edit_transaction_screen.dart';
@@ -198,10 +199,14 @@ class _ListEditTransactionScreenState extends State<ListEditTransactionScreen> {
               onPressed: () async {
                 await _transactionRepo.deleteByDate(date!);
                 setState(() {});
-                Fluttertoast.showToast(
-                    msg: 'Semua transaksi tanggal $date telah dihapus.');
                 Navigator.of(context).pop();
                 Navigator.pop(context);
+                CoolAlert.show(
+                  title: 'Sukses!',
+                  context: context,
+                  type: CoolAlertType.success,
+                  text: 'Semua transaksi tanggal $date telah dihapus.',
+                );
               },
             ),
           ],

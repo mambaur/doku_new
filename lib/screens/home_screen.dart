@@ -11,14 +11,16 @@ import 'package:doku/screens/transactions/create/expense_create_screen.dart';
 import 'package:doku/screens/transactions/create/income_create_screen.dart';
 import 'package:doku/screens/transactions/expense_screen.dart';
 import 'package:doku/screens/transactions/income_screen.dart';
-import 'package:doku/shared_preferences/init_category.dart';
 import 'package:doku/utils/currency_format.dart';
 import 'package:doku/utils/date_instance.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
 
 enum StatusAd { initial, loaded }
 
@@ -69,6 +71,33 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         latestTransaction = data;
       });
+    }
+  }
+
+  List<TransactionByCategory> expenseByCategory = [];
+
+  List<TransactionByCategory> incomeByCategory = [];
+
+  Future getTransactionByCategory() async {
+    incomeByCategory = [];
+    expenseByCategory = [];
+    setState(() {});
+    try {
+      List<TransactionByCategory>? dataIncome =
+          await _transactionRepo.getTransactionByCategory(
+              now.month.toString().padLeft(2, '0'), now.year,
+              type: 'income');
+      incomeByCategory = dataIncome ?? [];
+      List<TransactionByCategory>? dataExpense =
+          await _transactionRepo.getTransactionByCategory(
+              now.month.toString().padLeft(2, '0'), now.year,
+              type: 'expense');
+      expenseByCategory = dataExpense ?? [];
+      setState(() {});
+    } catch (e) {
+      if (kDebugMode) {
+        print(e.toString());
+      }
     }
   }
 
@@ -139,6 +168,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _refresh() async {
     await Future.delayed(Duration(seconds: 1));
     initData();
+    getTransactionByCategory();
     print('Refresing...');
   }
 
@@ -154,6 +184,7 @@ class _HomeScreenState extends State<HomeScreen> {
     getBalance();
     chartData(now.month, now.year, type: 'income');
     chartData(now.month, now.year, type: 'expense');
+    getTransactionByCategory();
     getLatestTransaction();
   }
 
@@ -164,9 +195,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
     myBanner = BannerAd(
       // test banner
-      adUnitId: 'ca-app-pub-3940256099942544/6300978111',
+      // adUnitId: 'ca-app-pub-3940256099942544/6300978111',
       //
-      // adUnitId: 'ca-app-pub-2465007971338713/2900622168',
+      adUnitId: 'ca-app-pub-2465007971338713/2900622168',
       size: AdSize.banner,
       request: const AdRequest(),
       listener: listener(),
@@ -316,31 +347,33 @@ class _HomeScreenState extends State<HomeScreen> {
                           options: CarouselOptions(
                               autoPlay: true,
                               autoPlayAnimationDuration:
-                                  const Duration(milliseconds: 1000),
-                              aspectRatio: 2 / 1,
+                                  const Duration(milliseconds: 2000),
+                              aspectRatio: 2.3 / 1,
                               enlargeCenterPage: true,
                               viewportFraction: 0.8),
                           items: [
                             Container(
-                              height: 75,
                               width: double.infinity,
                               decoration: BoxDecoration(
-                                  color: Colors.green.shade400,
+                                  gradient: LinearGradient(colors: [
+                                    Colors.lightGreen.shade600,
+                                    Colors.green.shade600,
+                                  ]),
                                   borderRadius: BorderRadius.circular(20)),
                               child: Stack(
                                 children: [
                                   Container(
+                                    alignment: Alignment.bottomLeft,
                                     padding: const EdgeInsets.only(left: 5),
                                     child: Icon(
                                       Icons.payment,
                                       size: 150,
-                                      color: Colors.green.shade500
-                                          .withOpacity(0.5),
+                                      color: Colors.black.withOpacity(0.03),
                                     ),
                                   ),
                                   Container(
                                       padding: const EdgeInsets.only(
-                                          right: 15, bottom: 10),
+                                          right: 20, bottom: 15),
                                       alignment: Alignment.bottomRight,
                                       child: Text(
                                         currencyId.format(totalIncome),
@@ -354,20 +387,42 @@ class _HomeScreenState extends State<HomeScreen> {
                                   Container(
                                     padding: const EdgeInsets.all(20),
                                     alignment: Alignment.topLeft,
-                                    child: Column(
+                                    child: Row(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Text(
-                                          'Total Pemasukan \n${idMonths[now.month - 1]} ${now.year}',
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16),
+                                        Expanded(
+                                          child: Text(
+                                            'Total Pemasukan \n${idMonths[now.month - 1]} ${now.year}',
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16),
+                                          ),
                                         ),
-                                        Text(
-                                          '(Income)',
-                                          style: TextStyle(color: Colors.white),
+                                        Container(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 5, horizontal: 10),
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              color: Colors.white
+                                                  .withOpacity(0.2)),
+                                          child: Row(
+                                            children: [
+                                              Icon(Icons.payment,
+                                                  size: 20,
+                                                  color: Colors.white),
+                                              SizedBox(width: 5),
+                                              Text(
+                                                'Income',
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                            ],
+                                          ),
                                         )
                                       ],
                                     ),
@@ -376,25 +431,27 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             ),
                             Container(
-                              height: 75,
                               width: double.infinity,
                               decoration: BoxDecoration(
-                                  color: Colors.orange.shade400,
+                                  gradient: LinearGradient(colors: [
+                                    Colors.orangeAccent.shade200,
+                                    Colors.orange.shade500,
+                                  ]),
                                   borderRadius: BorderRadius.circular(20)),
                               child: Stack(
                                 children: [
                                   Container(
+                                    alignment: Alignment.bottomLeft,
                                     padding: const EdgeInsets.only(left: 5),
                                     child: Icon(
                                       Icons.payment,
                                       size: 150,
-                                      color: Colors.orange.shade500
-                                          .withOpacity(0.5),
+                                      color: Colors.black.withOpacity(0.03),
                                     ),
                                   ),
                                   Container(
                                       padding: const EdgeInsets.only(
-                                          right: 15, bottom: 10),
+                                          right: 20, bottom: 15),
                                       alignment: Alignment.bottomRight,
                                       child: Text(
                                         currencyId.format(totalExpense),
@@ -408,20 +465,42 @@ class _HomeScreenState extends State<HomeScreen> {
                                   Container(
                                     padding: EdgeInsets.all(20),
                                     alignment: Alignment.topLeft,
-                                    child: Column(
+                                    child: Row(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Text(
-                                          'Total Pengeluaran \n${idMonths[now.month - 1]} ${now.year}',
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16),
+                                        Expanded(
+                                          child: Text(
+                                            'Total Pengeluaran \n${idMonths[now.month - 1]} ${now.year}',
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16),
+                                          ),
                                         ),
-                                        Text(
-                                          '(Expense)',
-                                          style: TextStyle(color: Colors.white),
+                                        Container(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 5, horizontal: 10),
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              color: Colors.white
+                                                  .withOpacity(0.2)),
+                                          child: Row(
+                                            children: [
+                                              Icon(Icons.payment,
+                                                  size: 20,
+                                                  color: Colors.white),
+                                              SizedBox(width: 5),
+                                              Text(
+                                                'Expense',
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                            ],
+                                          ),
                                         )
                                       ],
                                     ),
@@ -541,7 +620,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       Container(
                           margin: EdgeInsets.only(
                               left: 15, right: 15, bottom: 10, top: 10),
-                          child: Text('Periode Transaksi',
+                          child: Text('Laporanmu',
                               style: TextStyle(fontWeight: FontWeight.bold))),
                       Container(
                         height: 40,
@@ -586,23 +665,191 @@ class _HomeScreenState extends State<HomeScreen> {
                             }),
                       )
                     ])),
-                    SliverList(
-                        delegate: SliverChildListDelegate([
-                      statusAd == StatusAd.loaded
-                          ? Container(
-                              margin:
-                                  EdgeInsets.only(top: 15, left: 15, right: 15),
-                              alignment: Alignment.center,
-                              child: AdWidget(ad: myBanner!),
-                              width: myBanner!.size.width.toDouble(),
-                              height: myBanner!.size.height.toDouble(),
-                            )
-                          : Container()
-                    ])),
+                    incomeByCategory.length != 0
+                        ? SliverList(
+                            delegate: SliverChildListDelegate([
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Container(
+                                margin: EdgeInsets.only(
+                                    left: 15, right: 15, top: 10, bottom: 5),
+                                child: Text('Pemasukanmu Bulan ini',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold))),
+                            Container(
+                                margin: EdgeInsets.only(left: 15, right: 15),
+                                width: MediaQuery.of(context).size.width,
+                                padding: EdgeInsets.all(15),
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(10)),
+                                // height: 10,
+                                child: Column(
+                                  children: [
+                                    for (TransactionByCategory item
+                                        in incomeByCategory)
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            (item.categoryModel?.name ?? '') +
+                                                ' (${currencyId.format(item.nominal)})',
+                                            style: TextStyle(
+                                                color: Colors.grey,
+                                                fontSize: 12),
+                                          ),
+                                          Container(
+                                            margin: EdgeInsets.only(bottom: 15),
+                                            child: Row(
+                                              children: [
+                                                Flexible(
+                                                  flex: 9,
+                                                  child: LinearPercentIndicator(
+                                                    lineHeight: 23.0,
+                                                    animation: true,
+                                                    percent: item.percent ?? 0,
+                                                    padding: EdgeInsets.only(
+                                                        right: 10),
+                                                    barRadius:
+                                                        Radius.circular(5),
+                                                    backgroundColor:
+                                                        Colors.grey.shade100,
+                                                    progressColor:
+                                                        Colors.green.shade600,
+                                                  ),
+                                                ),
+                                                Flexible(
+                                                    flex: 2,
+                                                    child: Text(
+                                                      ((item.percent ?? 0) *
+                                                                  100)
+                                                              .toStringAsFixed(
+                                                                  0) +
+                                                          '%',
+                                                      textAlign: TextAlign.end,
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: Colors
+                                                              .green.shade600),
+                                                    ))
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    // ElevatedButton(
+                                    //     onPressed: () {
+                                    //       getTransactionByCategory();
+                                    //     },
+                                    //     child: Text('check'))
+                                  ],
+                                ))
+                          ]))
+                        : SliverList(delegate: SliverChildListDelegate([])),
+                    expenseByCategory.length != 0
+                        ? SliverList(
+                            delegate: SliverChildListDelegate([
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Container(
+                                margin: EdgeInsets.only(
+                                    left: 15, right: 15, top: 10, bottom: 5),
+                                child: Text('Pengeluaranmu Bulan ini',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold))),
+                            Container(
+                                margin: EdgeInsets.only(left: 15, right: 15),
+                                width: MediaQuery.of(context).size.width,
+                                padding: EdgeInsets.all(15),
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(10)),
+                                // height: 10,
+                                child: Column(
+                                  children: [
+                                    for (TransactionByCategory item
+                                        in expenseByCategory)
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            (item.categoryModel?.name ?? '') +
+                                                ' (${currencyId.format(item.nominal)})',
+                                            style: TextStyle(
+                                                color: Colors.grey,
+                                                fontSize: 12),
+                                          ),
+                                          Container(
+                                            margin: EdgeInsets.only(bottom: 15),
+                                            child: Row(
+                                              children: [
+                                                Flexible(
+                                                  flex: 9,
+                                                  child: LinearPercentIndicator(
+                                                    lineHeight: 23.0,
+                                                    animation: true,
+                                                    percent: item.percent ?? 0,
+                                                    padding: EdgeInsets.only(
+                                                        right: 10),
+                                                    barRadius:
+                                                        Radius.circular(5),
+                                                    backgroundColor:
+                                                        Colors.grey.shade100,
+                                                    progressColor:
+                                                        Colors.orange.shade600,
+                                                  ),
+                                                ),
+                                                Flexible(
+                                                    flex: 2,
+                                                    child: Text(
+                                                      ((item.percent ?? 0) *
+                                                                  100)
+                                                              .toStringAsFixed(
+                                                                  0) +
+                                                          '%',
+                                                      textAlign: TextAlign.end,
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: Colors
+                                                              .orange.shade600),
+                                                    ))
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    // ElevatedButton(
+                                    //     onPressed: () {
+                                    //       getTransactionByCategory();
+                                    //     },
+                                    //     child: Text('check'))
+                                  ],
+                                ))
+                          ]))
+                        : SliverList(delegate: SliverChildListDelegate([])),
+                    // SliverList(
+                    //     delegate: SliverChildListDelegate([
+                    //   statusAd == StatusAd.loaded
+                    //       ? Container(
+                    //           margin:
+                    //               EdgeInsets.only(top: 15, left: 15, right: 15),
+                    //           alignment: Alignment.center,
+                    //           child: AdWidget(ad: myBanner!),
+                    //           width: myBanner!.size.width.toDouble(),
+                    //           height: myBanner!.size.height.toDouble(),
+                    //         )
+                    //       : Container()
+                    // ])),
                     SliverList(
                         delegate: SliverChildListDelegate([
                       SizedBox(
-                        height: 15,
+                        height: 10,
                       ),
                       Container(
                           margin: EdgeInsets.only(
@@ -798,7 +1045,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-class SimpleBarChart extends StatelessWidget {
+class SimpleBarChart extends StatefulWidget {
   final List<charts.Series<dynamic, String>> seriesList;
   final bool? animate;
 
@@ -815,12 +1062,7 @@ class SimpleBarChart extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return charts.BarChart(
-      seriesList,
-      animate: animate ?? true,
-    );
-  }
+  State<SimpleBarChart> createState() => _SimpleBarChartState();
 
   /// Create one series with sample hard coded data.
   static List<charts.Series<OrdinalSales, String>> _createSampleData(
@@ -842,6 +1084,36 @@ class SimpleBarChart extends StatelessWidget {
         data: data,
       )
     ];
+  }
+}
+
+class _SimpleBarChartState extends State<SimpleBarChart> {
+  _onSelectionChanged(charts.SelectionModel model) {
+    final selectedDatum = model.selectedDatum;
+
+    if (selectedDatum.isNotEmpty) {
+      setState(() {
+        if (selectedDatum.first.datum.sales.toString() != '0') {
+          Fluttertoast.showToast(
+              msg: currencyId.format(selectedDatum.first.datum.sales));
+          print(selectedDatum.first.datum.sales);
+        }
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return charts.BarChart(
+      widget.seriesList,
+      animate: widget.animate ?? true,
+      selectionModels: [
+        new charts.SelectionModelConfig(
+          type: charts.SelectionModelType.info,
+          changedListener: _onSelectionChanged,
+        )
+      ],
+    );
   }
 }
 

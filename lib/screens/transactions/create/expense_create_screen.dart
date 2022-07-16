@@ -284,6 +284,7 @@ class _ExpenseCreateScreenState extends State<ExpenseCreateScreen> {
                       );
                       await storeTransaction();
                       Loader.hide();
+                      Navigator.pop(context);
                       CoolAlert.show(
                         title: 'Sukses!',
                         context: context,
@@ -291,7 +292,7 @@ class _ExpenseCreateScreenState extends State<ExpenseCreateScreen> {
                         text:
                             "Transaksi dengan kategori ${selectedCategory!.name} telah ditambahkan sebesar ${currencyId.format(int.parse(CurrencyFormat.toNumber(_nominalController.text)))}.",
                       );
-                      resetInput();
+                      // resetInput();
                     }
                   },
                   child: const Text('TAMBAH',

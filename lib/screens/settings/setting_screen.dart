@@ -127,17 +127,17 @@ class _SettingScreenState extends State<SettingScreen> {
                     ),
                     trailing: Icon(Icons.chevron_right),
                   ),
-                  ListTile(
-                    onTap: () {
-                      _launchUrl('https://saweria.co/bauroziq');
-                    },
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(
-                      'Dukung Pengembangan',
-                      style: TextStyle(fontSize: 14),
-                    ),
-                    trailing: Icon(Icons.chevron_right),
-                  ),
+                  // ListTile(
+                  //   onTap: () {
+                  //     _launchUrl('https://saweria.co/bauroziq');
+                  //   },
+                  //   contentPadding: EdgeInsets.zero,
+                  //   title: Text(
+                  //     'Dukung Pengembangan',
+                  //     style: TextStyle(fontSize: 14),
+                  //   ),
+                  //   trailing: Icon(Icons.chevron_right),
+                  // ),
                   ListTile(
                     contentPadding: EdgeInsets.zero,
                     title: Text(

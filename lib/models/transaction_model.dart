@@ -50,3 +50,11 @@ class GroupingTransactionModel {
 
   GroupingTransactionModel({this.date, this.listTransactions});
 }
+
+class TransactionByCategory {
+  CategoryModel? categoryModel;
+  double? percent;
+  int? nominal;
+
+  TransactionByCategory({this.categoryModel, this.percent, this.nominal});
+}

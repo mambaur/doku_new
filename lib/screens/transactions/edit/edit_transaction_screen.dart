@@ -7,7 +7,6 @@ import 'package:doku/utils/currency_format.dart';
 import 'package:doku/utils/date_instance.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_overlay_loader/flutter_overlay_loader.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:pattern_formatter/numeric_formatter.dart';
@@ -88,7 +87,9 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
 
   @override
   void initState() {
-    _nominalController.text = widget.transactionModel!.nominal.toString();
+    // _nominalController.text = widget.transactionModel!.nominal.toString();
+    _nominalController.text = NumberFormat.decimalPattern('id')
+        .format(widget.transactionModel!.nominal ?? 0);
     _dateController.text = widget.transactionModel!.date ?? '';
     _notesController.text = widget.transactionModel!.notes ?? '';
     getCategory();
@@ -110,6 +111,7 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
         elevation: 0.5,
         centerTitle: true,
       ),
+      backgroundColor: Colors.white,
       body: Stack(
         children: [
           SingleChildScrollView(
@@ -247,8 +249,11 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
                 margin: const EdgeInsets.all(5),
                 width: MediaQuery.of(context).size.width,
                 child: ElevatedButton(
-                  style:
-                      ElevatedButton.styleFrom(primary: Colors.green.shade400),
+                  style: ElevatedButton.styleFrom(
+                      primary:
+                          widget.transactionModel!.category!.type == 'income'
+                              ? Colors.green.shade400
+                              : Colors.orange.shade400),
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
                       Loader.show(
