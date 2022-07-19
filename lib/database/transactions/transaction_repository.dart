@@ -221,10 +221,14 @@ class TransactionRepository {
 
   Future<List<TransactionByCategory>?> getTransactionByCategory(
       String? month, int? year,
-      {String type = 'expense'}) async {
+      {String type = 'expense', int? limit}) async {
+    String limitText = '';
+    if (limit != null) {
+      limitText = 'LIMIT $limit';
+    }
     Database db = await dbInstance.database;
     final data = await db.rawQuery(
-        'SELECT SUM(${dbInstance.transactionTable}.${dbInstance.transactionNominal}) as total, ${dbInstance.categoryTable}.${dbInstance.categoryId}, ${dbInstance.categoryTable}.${dbInstance.categoryName}  FROM ${dbInstance.transactionTable} JOIN ${dbInstance.categoryTable} ON ${dbInstance.categoryTable}.${dbInstance.categoryId}=${dbInstance.transactionTable}.${dbInstance.transactionCategoryId} WHERE ${dbInstance.transactionTable}.${dbInstance.transactionDate} >= "$year-$month-01" AND ${dbInstance.transactionTable}.${dbInstance.transactionDate} <= "$year-$month-31" AND ${dbInstance.categoryTable}.${dbInstance.categoryType}="$type" GROUP BY ${dbInstance.categoryTable}.${dbInstance.categoryId} ORDER BY total DESC LIMIT 6',
+        'SELECT SUM(${dbInstance.transactionTable}.${dbInstance.transactionNominal}) as total, ${dbInstance.categoryTable}.${dbInstance.categoryId}, ${dbInstance.categoryTable}.${dbInstance.categoryName}  FROM ${dbInstance.transactionTable} JOIN ${dbInstance.categoryTable} ON ${dbInstance.categoryTable}.${dbInstance.categoryId}=${dbInstance.transactionTable}.${dbInstance.transactionCategoryId} WHERE ${dbInstance.transactionTable}.${dbInstance.transactionDate} >= "$year-$month-01" AND ${dbInstance.transactionTable}.${dbInstance.transactionDate} <= "$year-$month-31" AND ${dbInstance.categoryTable}.${dbInstance.categoryType}="$type" GROUP BY ${dbInstance.categoryTable}.${dbInstance.categoryId} ORDER BY total DESC $limitText',
         []);
 
     List<TransactionByCategory> result = [];

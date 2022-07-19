@@ -69,83 +69,93 @@ class _WeeklyReportScreenState extends State<WeeklyReportScreen> {
               title: Row(
                 children: [
                   Expanded(
-                    child: DropdownButton<String>(
-                      isExpanded: true,
-                      value: selectedWeek,
-                      icon: const Icon(Icons.arrow_drop_down),
-                      elevation: 1,
-                      style: TextStyle(color: Colors.black.withOpacity(0.8)),
-                      underline: Container(
-                        height: 1,
-                        color: Colors.black.withOpacity(0.8),
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                          color: Colors.grey.shade100,
+                          borderRadius: BorderRadius.circular(10)),
+                      child: DropdownButton<String>(
+                        isExpanded: true,
+                        value: selectedWeek,
+                        icon: const Icon(Icons.arrow_drop_down),
+                        elevation: 1,
+                        style: TextStyle(color: Colors.black.withOpacity(0.8)),
+                        underline: Container(),
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            selectedWeek = newValue!;
+                          });
+                        },
+                        items: listWeeks
+                            .map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
                       ),
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          selectedWeek = newValue!;
-                        });
-                      },
-                      items: listWeeks
-                          .map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
                     ),
                   ),
                   SizedBox(
                     width: 5,
                   ),
                   Expanded(
-                    child: DropdownButton<String>(
-                      isExpanded: true,
-                      value: selectedMonth,
-                      icon: const Icon(Icons.arrow_drop_down),
-                      elevation: 1,
-                      style: TextStyle(color: Colors.black.withOpacity(0.8)),
-                      underline: Container(
-                        height: 1,
-                        color: Colors.black.withOpacity(0.8),
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                          color: Colors.grey.shade100,
+                          borderRadius: BorderRadius.circular(10)),
+                      child: DropdownButton<String>(
+                        isExpanded: true,
+                        value: selectedMonth,
+                        icon: const Icon(Icons.arrow_drop_down),
+                        elevation: 1,
+                        style: TextStyle(color: Colors.black.withOpacity(0.8)),
+                        underline: Container(),
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            selectedMonth = newValue!;
+                          });
+                        },
+                        items: idMonths
+                            .map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
                       ),
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          selectedMonth = newValue!;
-                        });
-                      },
-                      items: idMonths
-                          .map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
                     ),
                   ),
                   SizedBox(
                     width: 5,
                   ),
                   Expanded(
-                    child: DropdownButton<int>(
-                      isExpanded: true,
-                      value: selectedYear,
-                      icon: const Icon(Icons.arrow_drop_down),
-                      elevation: 1,
-                      style: TextStyle(color: Colors.black.withOpacity(0.8)),
-                      underline: Container(
-                        height: 1,
-                        color: Colors.black.withOpacity(0.8),
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                          color: Colors.grey.shade100,
+                          borderRadius: BorderRadius.circular(10)),
+                      child: DropdownButton<int>(
+                        isExpanded: true,
+                        value: selectedYear,
+                        icon: const Icon(Icons.arrow_drop_down),
+                        elevation: 1,
+                        style: TextStyle(color: Colors.black.withOpacity(0.8)),
+                        underline: Container(),
+                        onChanged: (int? newValue) {
+                          setState(() {
+                            selectedYear = newValue!;
+                          });
+                        },
+                        items:
+                            listYears.map<DropdownMenuItem<int>>((int value) {
+                          return DropdownMenuItem<int>(
+                            value: value,
+                            child: Text(value.toString()),
+                          );
+                        }).toList(),
                       ),
-                      onChanged: (int? newValue) {
-                        setState(() {
-                          selectedYear = newValue!;
-                        });
-                      },
-                      items: listYears.map<DropdownMenuItem<int>>((int value) {
-                        return DropdownMenuItem<int>(
-                          value: value,
-                          child: Text(value.toString()),
-                        );
-                      }).toList(),
                     ),
                   )
                 ],

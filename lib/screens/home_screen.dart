@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:doku/database/transactions/transaction_repository.dart';
 import 'package:doku/models/transaction_model.dart';
 import 'package:doku/screens/categories/category_screen.dart';
+import 'package:doku/screens/others/detail_report_category.dart';
 import 'package:doku/screens/reports/all_report_screen.dart';
 import 'package:doku/screens/reports/annual_report_screen.dart';
 import 'package:doku/screens/reports/monthly_report_screen.dart';
@@ -86,12 +87,12 @@ class _HomeScreenState extends State<HomeScreen> {
       List<TransactionByCategory>? dataIncome =
           await _transactionRepo.getTransactionByCategory(
               now.month.toString().padLeft(2, '0'), now.year,
-              type: 'income');
+              type: 'income', limit: 6);
       incomeByCategory = dataIncome ?? [];
       List<TransactionByCategory>? dataExpense =
           await _transactionRepo.getTransactionByCategory(
               now.month.toString().padLeft(2, '0'), now.year,
-              type: 'expense');
+              type: 'expense', limit: 6);
       expenseByCategory = dataExpense ?? [];
       setState(() {});
     } catch (e) {
@@ -686,6 +687,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     borderRadius: BorderRadius.circular(10)),
                                 // height: 10,
                                 child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     for (TransactionByCategory item
                                         in incomeByCategory)
@@ -740,11 +742,21 @@ class _HomeScreenState extends State<HomeScreen> {
                                           ),
                                         ],
                                       ),
-                                    // ElevatedButton(
-                                    //     onPressed: () {
-                                    //       getTransactionByCategory();
-                                    //     },
-                                    //     child: Text('check'))
+                                    GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(context,
+                                            MaterialPageRoute(
+                                                builder: (builder) {
+                                          return DetailReportCategory(
+                                            transactionType: 'income',
+                                          );
+                                        }));
+                                      },
+                                      child: Text('Lihat Semua',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.blue)),
+                                    )
                                   ],
                                 ))
                           ]))
@@ -770,6 +782,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     borderRadius: BorderRadius.circular(10)),
                                 // height: 10,
                                 child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     for (TransactionByCategory item
                                         in expenseByCategory)
@@ -824,11 +837,21 @@ class _HomeScreenState extends State<HomeScreen> {
                                           ),
                                         ],
                                       ),
-                                    // ElevatedButton(
-                                    //     onPressed: () {
-                                    //       getTransactionByCategory();
-                                    //     },
-                                    //     child: Text('check'))
+                                    GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(context,
+                                            MaterialPageRoute(
+                                                builder: (builder) {
+                                          return DetailReportCategory(
+                                            transactionType: 'expense',
+                                          );
+                                        }));
+                                      },
+                                      child: Text('Lihat Semua',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.blue)),
+                                    )
                                   ],
                                 ))
                           ]))
