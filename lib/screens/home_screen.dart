@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:doku/database/transactions/transaction_repository.dart';
 import 'package:doku/models/transaction_model.dart';
 import 'package:doku/screens/categories/category_screen.dart';
+import 'package:doku/screens/charts/daily_chart_screen.dart';
 import 'package:doku/screens/others/detail_report_category.dart';
 import 'package:doku/screens/reports/all_report_screen.dart';
 import 'package:doku/screens/reports/annual_report_screen.dart';
@@ -20,7 +21,6 @@ import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 enum StatusAd { initial, loaded }
@@ -728,7 +728,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                       ((item.percent ?? 0) *
                                                                   100)
                                                               .toStringAsFixed(
-                                                                  0) +
+                                                                  1) +
                                                           '%',
                                                       textAlign: TextAlign.end,
                                                       style: TextStyle(
@@ -823,7 +823,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                       ((item.percent ?? 0) *
                                                                   100)
                                                               .toStringAsFixed(
-                                                                  0) +
+                                                                  1) +
                                                           '%',
                                                       textAlign: TextAlign.end,
                                                       style: TextStyle(
@@ -964,6 +964,32 @@ class _HomeScreenState extends State<HomeScreen> {
                           leading: Icon(Icons.file_present),
                           trailing: Icon(Icons.chevron_right),
                           title: Text('Semua Pengeluaran',
+                              style: TextStyle(fontSize: 14)),
+                        ),
+                      ),
+                    ])),
+                    SliverList(
+                        delegate: SliverChildListDelegate([
+                      Container(
+                          margin: EdgeInsets.only(left: 15, right: 15, top: 10),
+                          child: Text('Grafik Lainnya',
+                              style: TextStyle(fontWeight: FontWeight.bold))),
+                      Container(
+                        margin: EdgeInsets.only(
+                            top: 10, bottom: 10, left: 15, right: 5),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.white),
+                        child: ListTile(
+                          onTap: () {
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (builder) {
+                              return DailyChartScreen();
+                            }));
+                          },
+                          leading: Icon(Icons.bar_chart_outlined),
+                          trailing: Icon(Icons.chevron_right),
+                          title: Text('Grafik Pengeluaran Harian',
                               style: TextStyle(fontSize: 14)),
                         ),
                       ),

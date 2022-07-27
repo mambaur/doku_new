@@ -1,6 +1,7 @@
 import 'package:doku/database/database_instance.dart';
 import 'package:doku/models/category_model.dart';
 import 'package:doku/models/transaction_model.dart';
+import 'package:intl/intl.dart';
 import 'package:sqflite/sqflite.dart';
 
 class TransactionRepository {
@@ -246,6 +247,51 @@ class TransactionRepository {
               id: int.parse(data[i]['id'].toString()),
               name: data[i]['name'].toString())));
     }
+    return result;
+  }
+
+  Future<int> getTotalTransactionByDate(String date) async {
+    Database db = await dbInstance.database;
+    final data = await db.rawQuery(
+        'SELECT SUM(${dbInstance.transactionTable}.${dbInstance.transactionNominal}) as total FROM ${dbInstance.transactionTable} JOIN ${dbInstance.categoryTable} ON ${dbInstance.categoryTable}.${dbInstance.categoryId}=${dbInstance.transactionTable}.${dbInstance.transactionCategoryId} WHERE ${dbInstance.transactionTable}.${dbInstance.transactionDate}="$date" AND ${dbInstance.categoryTable}.${dbInstance.categoryType}="expense" ORDER BY ${dbInstance.transactionTable}.${dbInstance.transactionUpdatedAt} DESC',
+        []);
+    return int.parse((data[0]['total'] ?? 0).toString());
+  }
+
+  Future<int> getTotalTransactionByWeek({int weekNumber = 1}) async {
+    // 1 week is 7 day
+    String startDay = ((7 * weekNumber) - 7).toString().padLeft(2, '0');
+    String endDay = (int.parse(startDay) + 7).toString().padLeft(2, '0');
+
+    String month = DateTime.now().month.toString().padLeft(2, '0');
+    String year = DateTime.now().year.toString();
+
+    Database db = await dbInstance.database;
+    final data = await db.rawQuery(
+        'SELECT SUM(${dbInstance.transactionTable}.${dbInstance.transactionNominal}) as total FROM ${dbInstance.transactionTable} JOIN ${dbInstance.categoryTable} ON ${dbInstance.categoryTable}.${dbInstance.categoryId}=${dbInstance.transactionTable}.${dbInstance.transactionCategoryId} WHERE ${dbInstance.transactionTable}.${dbInstance.transactionDate} >= "$year-$month-$startDay" AND ${dbInstance.transactionTable}.${dbInstance.transactionDate} <= "$year-$month-$endDay" AND ${dbInstance.categoryTable}.${dbInstance.categoryType}="expense" ORDER BY ${dbInstance.transactionTable}.${dbInstance.transactionDate} DESC',
+        []);
+    return int.parse((data[0]['total'] ?? 0).toString());
+  }
+
+  Future<List<Map<String, dynamic>>> getTransactionDaily() async {
+    List<Map<String, dynamic>>? result = [];
+    for (var i = 0; i < 7; i++) {
+      DateTime date = DateTime.now().subtract(Duration(days: i));
+      int total = await getTotalTransactionByDate(
+          DateFormat('yyyy-MM-dd').format(date));
+      result.add({'day': DateFormat('EE').format(date), 'total': total});
+    }
+
+    return result;
+  }
+
+  Future<List<Map<String, dynamic>>> getTransactionWeek() async {
+    List<Map<String, dynamic>>? result = [];
+    for (var i = 1; i <= 4; i++) {
+      int total = await getTotalTransactionByWeek(weekNumber: i);
+      result.add({'week': i, 'total': total});
+    }
+
     return result;
   }
 

@@ -4,8 +4,6 @@ import 'package:doku/utils/currency_format.dart';
 import 'package:doku/utils/date_instance.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_overlay_loader/flutter_overlay_loader.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class DetailReportCategory extends StatefulWidget {
@@ -72,14 +70,6 @@ class _DetailReportChartScreenState extends State<DetailReportChartScreen> {
   List<TransactionByCategory> chartByCategory = [];
 
   Future getTransactionByCategory() async {
-    Loader.show(
-      context,
-      isSafeAreaOverlay: false,
-      isAppbarOverlay: true,
-      isBottomBarOverlay: true,
-      progressIndicator: LoadingAnimationWidget.discreteCircle(
-          color: Colors.green, size: MediaQuery.of(context).size.width * 0.15),
-    );
     chartByCategory = [];
     setState(() {});
     try {
@@ -89,8 +79,6 @@ class _DetailReportChartScreenState extends State<DetailReportChartScreen> {
               selectedYear,
               type: widget.transactionType ?? 'income');
       chartByCategory = dataIncome ?? [];
-
-      Loader.hide();
       setState(() {});
     } catch (e) {
       if (kDebugMode) {
@@ -216,7 +204,7 @@ class _DetailReportChartScreenState extends State<DetailReportChartScreen> {
                         Flexible(
                             flex: 2,
                             child: Text(
-                              ((item.percent ?? 0) * 100).toStringAsFixed(0) +
+                              ((item.percent ?? 0) * 100).toStringAsFixed(1) +
                                   '%',
                               textAlign: TextAlign.end,
                               style: TextStyle(
