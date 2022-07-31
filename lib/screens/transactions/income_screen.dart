@@ -23,6 +23,16 @@ class _IncomeScreenState extends State<IncomeScreen> {
   int limit = 15;
   bool hasReachedMax = false;
 
+  void onScroll() {
+    double maxScroll = _scrollController.position.maxScrollExtent;
+    double currentScroll = _scrollController.position.pixels;
+
+    if (currentScroll == maxScroll && !hasReachedMax) {
+      page++;
+      getTransactions();
+    }
+  }
+
   Future getTransactions() async {
     List<TransactionModel> data =
         await _transactionRepo.all(type: 'income', page: page, limit: limit);
@@ -32,16 +42,6 @@ class _IncomeScreenState extends State<IncomeScreen> {
     }
     transactions.addAll(data);
     setState(() {});
-  }
-
-  void onScroll() {
-    double maxScroll = _scrollController.position.maxScrollExtent;
-    double currentScroll = _scrollController.position.pixels;
-
-    if (currentScroll == maxScroll && !hasReachedMax) {
-      page++;
-      getTransactions();
-    }
   }
 
   @override
