@@ -856,19 +856,19 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ))
                           ]))
                         : SliverList(delegate: SliverChildListDelegate([])),
-                    // SliverList(
-                    //     delegate: SliverChildListDelegate([
-                    //   statusAd == StatusAd.loaded
-                    //       ? Container(
-                    //           margin:
-                    //               EdgeInsets.only(top: 15, left: 15, right: 15),
-                    //           alignment: Alignment.center,
-                    //           child: AdWidget(ad: myBanner!),
-                    //           width: myBanner!.size.width.toDouble(),
-                    //           height: myBanner!.size.height.toDouble(),
-                    //         )
-                    //       : Container()
-                    // ])),
+                    SliverList(
+                        delegate: SliverChildListDelegate([
+                      statusAd == StatusAd.loaded
+                          ? Container(
+                              margin:
+                                  EdgeInsets.only(top: 15, left: 15, right: 15),
+                              alignment: Alignment.center,
+                              child: AdWidget(ad: myBanner!),
+                              width: myBanner!.size.width.toDouble(),
+                              height: myBanner!.size.height.toDouble(),
+                            )
+                          : Container()
+                    ])),
                     SliverList(
                         delegate: SliverChildListDelegate([
                       SizedBox(
