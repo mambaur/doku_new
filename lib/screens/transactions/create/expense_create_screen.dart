@@ -268,8 +268,8 @@ class _ExpenseCreateScreenState extends State<ExpenseCreateScreen> {
                 margin: const EdgeInsets.all(5),
                 width: MediaQuery.of(context).size.width,
                 child: ElevatedButton(
-                  style:
-                      ElevatedButton.styleFrom(primary: Colors.orange.shade400),
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.orange.shade400),
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
                       Loader.show(

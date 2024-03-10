@@ -17,10 +17,10 @@ import 'package:doku/utils/currency_format.dart';
 import 'package:doku/utils/date_instance.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:community_charts_flutter/community_charts_flutter.dart'
+    as charts;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 enum StatusAd { initial, loaded }
@@ -63,7 +63,6 @@ class _HomeScreenState extends State<HomeScreen> {
   List<String>? labelExpenseCharts;
   List<int>? valueExpenseCharts;
 
-  PackageInfo? packageInfo;
   DateTime now = DateTime.now();
 
   Future getLatestTransaction() async {
@@ -100,10 +99,6 @@ class _HomeScreenState extends State<HomeScreen> {
         print(e.toString());
       }
     }
-  }
-
-  Future getPackageInfo() async {
-    packageInfo = await PackageInfo.fromPlatform();
   }
 
   Future getTotalIncomeMonth({String? type, int? year, String? month}) async {
@@ -191,7 +186,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    getPackageInfo();
     initData();
 
     myBanner = BannerAd(
@@ -315,16 +309,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                   leading: const Icon(Icons.settings),
                   title: const Text("Pengaturan")),
-              ListTile(
-                  onTap: () {
-                    _scaffoldKey.currentState?.openEndDrawer();
-                    // Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    //   return const Disclaimer();
-                    // }));
-                  },
-                  leading: const Icon(Icons.info),
-                  title: Text(
-                      "Versi ${packageInfo != null ? packageInfo!.version : ''}")),
             ]),
           ),
         ),

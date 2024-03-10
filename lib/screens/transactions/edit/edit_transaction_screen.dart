@@ -250,7 +250,7 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
                 width: MediaQuery.of(context).size.width,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                      primary:
+                      backgroundColor:
                           widget.transactionModel!.category!.type == 'income'
                               ? Colors.green.shade400
                               : Colors.orange.shade400),

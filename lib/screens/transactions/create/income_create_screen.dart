@@ -268,8 +268,8 @@ class _IncomeCreateScreenState extends State<IncomeCreateScreen> {
                 margin: const EdgeInsets.all(5),
                 width: MediaQuery.of(context).size.width,
                 child: ElevatedButton(
-                  style:
-                      ElevatedButton.styleFrom(primary: Colors.green.shade400),
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green.shade400),
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
                       Loader.show(

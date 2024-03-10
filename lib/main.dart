@@ -7,7 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:upgrader/upgrader.dart';
 
 int introduction = 0;
 
@@ -45,6 +44,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'DOKU',
       theme: ThemeData(
+          useMaterial3: false,
           textTheme: GoogleFonts.nunitoTextTheme(
             Theme.of(context).textTheme,
           ),
@@ -57,13 +57,14 @@ class MyApp extends StatelessWidget {
               actionsIconTheme:
                   IconThemeData(color: Colors.black.withOpacity(0.8)),
               iconTheme: IconThemeData(color: Colors.black.withOpacity(0.8)))),
-      home: UpgradeAlert(
-          showIgnore: false,
-          showLater: false,
-          showReleaseNotes: false,
-          child: introduction == 0
-              ? const OnBoardingScreen()
-              : const HomeScreen()),
+      // home: UpgradeAlert(
+      //     showIgnore: false,
+      //     showLater: false,
+      //     showReleaseNotes: false,
+      //     child: introduction == 0
+      //         ? const OnBoardingScreen()
+      //         : const HomeScreen()),
+      home: introduction == 0 ? const OnBoardingScreen() : const HomeScreen(),
       debugShowCheckedModeBanner: false,
     );
   }

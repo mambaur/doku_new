@@ -2,7 +2,6 @@ import 'package:doku/screens/about/about_screen.dart';
 import 'package:doku/screens/categories/category_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SettingScreen extends StatefulWidget {
@@ -19,16 +18,16 @@ class _SettingScreenState extends State<SettingScreen> {
     if (!await launchUrl(Uri.parse(_url))) throw 'Could not launch $_url';
   }
 
-  PackageInfo? packageInfo;
+  // PackageInfo? packageInfo;
 
-  Future getPackageInfo() async {
-    packageInfo = await PackageInfo.fromPlatform();
-    setState(() {});
-  }
+  // Future getPackageInfo() async {
+  //   packageInfo = await PackageInfo.fromPlatform();
+  //   setState(() {});
+  // }
 
   @override
   void initState() {
-    getPackageInfo();
+    // getPackageInfo();
     super.initState();
   }
 
@@ -138,14 +137,14 @@ class _SettingScreenState extends State<SettingScreen> {
                   //   ),
                   //   trailing: Icon(Icons.chevron_right),
                   // ),
-                  ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(
-                      'Versi ${packageInfo != null ? packageInfo!.version : ''}',
-                      style: TextStyle(fontSize: 14),
-                    ),
-                    trailing: Icon(Icons.chevron_right),
-                  ),
+                  // ListTile(
+                  //   contentPadding: EdgeInsets.zero,
+                  //   title: Text(
+                  //     'Versi ${packageInfo != null ? packageInfo!.version : ''}',
+                  //     style: TextStyle(fontSize: 14),
+                  //   ),
+                  //   trailing: Icon(Icons.chevron_right),
+                  // ),
                 ],
               ),
             ),

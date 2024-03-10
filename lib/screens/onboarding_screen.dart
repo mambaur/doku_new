@@ -70,7 +70,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                   TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
             ),
             style: ElevatedButton.styleFrom(
-              primary: Colors.green,
+              backgroundColor: Colors.green,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8.0),
               ),
