@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class ExpenseScreen extends StatefulWidget {
-  const ExpenseScreen({Key? key}) : super(key: key);
+  const ExpenseScreen({super.key});
 
   @override
   State<ExpenseScreen> createState() => _ExpenseScreenState();
@@ -100,7 +100,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
                               height: 3,
                             ),
                             transactions[index].notes != ''
-                                ? Text('Catatan: ${transactions[index].notes}')
+                                ? Text('${transactions[index].notes}')
                                 : Container(),
                           ],
                         )),

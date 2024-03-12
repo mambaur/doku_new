@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 
 class OnBoardingScreen extends StatefulWidget {
-  const OnBoardingScreen({Key? key}) : super(key: key);
+  const OnBoardingScreen({super.key});
 
   @override
   State<OnBoardingScreen> createState() => _OnBoardingScreenState();
@@ -59,22 +59,6 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
           image: Image.asset(
             'assets/images/onboarding/onboarding3.png',
             width: 220,
-          ),
-          footer: ElevatedButton(
-            onPressed: () {
-              _onIntroEnd(context);
-            },
-            child: const Text(
-              'Ayo Mulai !!',
-              style:
-                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-            ),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-            ),
           ),
           decoration: pageDecoration,
         ),

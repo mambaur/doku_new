@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:cool_alert/cool_alert.dart';
 import 'package:doku/database/categories/category_repository.dart';
 import 'package:doku/database/transactions/transaction_repository.dart';
@@ -13,7 +15,7 @@ import 'package:pattern_formatter/numeric_formatter.dart';
 import 'package:intl/intl.dart';
 
 class ExpenseCreateScreen extends StatefulWidget {
-  const ExpenseCreateScreen({Key? key}) : super(key: key);
+  const ExpenseCreateScreen({super.key});
 
   @override
   State<ExpenseCreateScreen> createState() => _ExpenseCreateScreenState();
@@ -221,7 +223,7 @@ class _ExpenseCreateScreenState extends State<ExpenseCreateScreen> {
                                             context,
                                             (MaterialPageRoute(
                                                 builder: (builder) {
-                                              return CategoryScreen(
+                                              return const CategoryScreen(
                                                 initialIndex: 1,
                                               );
                                             }))).then((value) {
@@ -250,7 +252,7 @@ class _ExpenseCreateScreenState extends State<ExpenseCreateScreen> {
                           textAlign: TextAlign.start,
                           textAlignVertical: TextAlignVertical.top,
                           // expands: true,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                               contentPadding: EdgeInsets.all(5),
                               hintText: 'Keterangan (opsional)'),
                         ),

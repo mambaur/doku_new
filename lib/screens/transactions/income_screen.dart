@@ -99,7 +99,7 @@ class _IncomeScreenState extends State<IncomeScreen> {
                             height: 3,
                           ),
                           transactions[index].notes != ''
-                              ? Text('Catatan: ${transactions[index].notes}')
+                              ? Text('${transactions[index].notes}')
                               : Container(),
                         ],
                       )),

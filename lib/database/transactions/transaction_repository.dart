@@ -24,7 +24,7 @@ class TransactionRepository {
         ? 'AND ${dbInstance.categoryTable}.${dbInstance.categoryType}="$type"'
         : '';
     final data = await db.rawQuery(
-        'SELECT ${dbInstance.transactionTable}.*, ${dbInstance.categoryTable}.${dbInstance.categoryName}, ${dbInstance.categoryTable}.${dbInstance.categoryType}, ${dbInstance.categoryTable}.${dbInstance.categoryDescription} FROM ${dbInstance.transactionTable} JOIN ${dbInstance.categoryTable} ON ${dbInstance.categoryTable}.${dbInstance.categoryId}=${dbInstance.transactionTable}.${dbInstance.transactionCategoryId} $whereType ORDER BY ${dbInstance.transactionTable}.${dbInstance.transactionDate} DESC LIMIT $limit OFFSET $offset',
+        'SELECT ${dbInstance.transactionTable}.*, ${dbInstance.categoryTable}.${dbInstance.categoryName}, ${dbInstance.categoryTable}.${dbInstance.categoryType}, ${dbInstance.categoryTable}.${dbInstance.categoryDescription} FROM ${dbInstance.transactionTable} JOIN ${dbInstance.categoryTable} ON ${dbInstance.categoryTable}.${dbInstance.categoryId}=${dbInstance.transactionTable}.${dbInstance.transactionCategoryId} $whereType ORDER BY ${dbInstance.transactionTable}.${dbInstance.transactionDate} DESC, ${dbInstance.transactionTable}.${dbInstance.transactionUpdatedAt} DESC LIMIT $limit OFFSET $offset',
         []);
 
     List<TransactionModel> listTransactions = [];
@@ -208,7 +208,7 @@ class TransactionRepository {
   Future<TransactionModel?> latestTransaction() async {
     Database db = await dbInstance.database;
     final data = await db.rawQuery(
-        'SELECT ${dbInstance.transactionTable}.*, ${dbInstance.categoryTable}.${dbInstance.categoryName}, ${dbInstance.categoryTable}.${dbInstance.categoryType}, ${dbInstance.categoryTable}.${dbInstance.categoryDescription} FROM ${dbInstance.transactionTable} JOIN ${dbInstance.categoryTable} ON ${dbInstance.categoryTable}.${dbInstance.categoryId}=${dbInstance.transactionTable}.${dbInstance.transactionCategoryId} ORDER BY ${dbInstance.transactionTable}.${dbInstance.transactionUpdatedAt} DESC LIMIT 1');
+        'SELECT ${dbInstance.transactionTable}.*, ${dbInstance.categoryTable}.${dbInstance.categoryName}, ${dbInstance.categoryTable}.${dbInstance.categoryType}, ${dbInstance.categoryTable}.${dbInstance.categoryDescription} FROM ${dbInstance.transactionTable} JOIN ${dbInstance.categoryTable} ON ${dbInstance.categoryTable}.${dbInstance.categoryId}=${dbInstance.transactionTable}.${dbInstance.transactionCategoryId} ORDER BY  ${dbInstance.transactionTable}.${dbInstance.transactionDate} DESC, ${dbInstance.transactionTable}.${dbInstance.transactionUpdatedAt} DESC LIMIT 1');
     if (data.isNotEmpty) {
       return TransactionModel(
           id: int.parse(data[0]['id'].toString()),
@@ -250,15 +250,17 @@ class TransactionRepository {
     return result;
   }
 
-  Future<int> getTotalTransactionByDate(String date) async {
+  Future<int> getTotalTransactionByDate(String date,
+      {String type = 'expense'}) async {
     Database db = await dbInstance.database;
     final data = await db.rawQuery(
-        'SELECT SUM(${dbInstance.transactionTable}.${dbInstance.transactionNominal}) as total FROM ${dbInstance.transactionTable} JOIN ${dbInstance.categoryTable} ON ${dbInstance.categoryTable}.${dbInstance.categoryId}=${dbInstance.transactionTable}.${dbInstance.transactionCategoryId} WHERE ${dbInstance.transactionTable}.${dbInstance.transactionDate}="$date" AND ${dbInstance.categoryTable}.${dbInstance.categoryType}="expense" ORDER BY ${dbInstance.transactionTable}.${dbInstance.transactionUpdatedAt} DESC',
+        'SELECT SUM(${dbInstance.transactionTable}.${dbInstance.transactionNominal}) as total FROM ${dbInstance.transactionTable} JOIN ${dbInstance.categoryTable} ON ${dbInstance.categoryTable}.${dbInstance.categoryId}=${dbInstance.transactionTable}.${dbInstance.transactionCategoryId} WHERE ${dbInstance.transactionTable}.${dbInstance.transactionDate}="$date" AND ${dbInstance.categoryTable}.${dbInstance.categoryType}="$type" ORDER BY ${dbInstance.transactionTable}.${dbInstance.transactionUpdatedAt} DESC',
         []);
     return int.parse((data[0]['total'] ?? 0).toString());
   }
 
-  Future<int> getTotalTransactionByWeek({int weekNumber = 1}) async {
+  Future<int> getTotalTransactionByWeek(
+      {int weekNumber = 1, String type = 'expense'}) async {
     // 1 week is 7 day
     String startDay = ((7 * weekNumber) - 7).toString().padLeft(2, '0');
     String endDay = (int.parse(startDay) + 7).toString().padLeft(2, '0');
@@ -268,28 +270,34 @@ class TransactionRepository {
 
     Database db = await dbInstance.database;
     final data = await db.rawQuery(
-        'SELECT SUM(${dbInstance.transactionTable}.${dbInstance.transactionNominal}) as total FROM ${dbInstance.transactionTable} JOIN ${dbInstance.categoryTable} ON ${dbInstance.categoryTable}.${dbInstance.categoryId}=${dbInstance.transactionTable}.${dbInstance.transactionCategoryId} WHERE ${dbInstance.transactionTable}.${dbInstance.transactionDate} >= "$year-$month-$startDay" AND ${dbInstance.transactionTable}.${dbInstance.transactionDate} <= "$year-$month-$endDay" AND ${dbInstance.categoryTable}.${dbInstance.categoryType}="expense" ORDER BY ${dbInstance.transactionTable}.${dbInstance.transactionDate} DESC',
+        'SELECT SUM(${dbInstance.transactionTable}.${dbInstance.transactionNominal}) as total FROM ${dbInstance.transactionTable} JOIN ${dbInstance.categoryTable} ON ${dbInstance.categoryTable}.${dbInstance.categoryId}=${dbInstance.transactionTable}.${dbInstance.transactionCategoryId} WHERE ${dbInstance.transactionTable}.${dbInstance.transactionDate} >= "$year-$month-$startDay" AND ${dbInstance.transactionTable}.${dbInstance.transactionDate} <= "$year-$month-$endDay" AND ${dbInstance.categoryTable}.${dbInstance.categoryType}="$type" ORDER BY ${dbInstance.transactionTable}.${dbInstance.transactionDate} DESC',
         []);
     return int.parse((data[0]['total'] ?? 0).toString());
   }
 
-  Future<List<Map<String, dynamic>>> getTransactionDaily() async {
+  Future<List<Map<String, dynamic>>> getTransactionDaily(
+      {String type = 'expense'}) async {
     List<Map<String, dynamic>>? result = [];
     for (var i = 0; i < 7; i++) {
       DateTime date = DateTime.now().subtract(Duration(days: i));
       int total = await getTotalTransactionByDate(
-          DateFormat('yyyy-MM-dd').format(date));
-      result.add({'day': DateFormat('EE').format(date), 'total': total});
+          DateFormat('yyyy-MM-dd').format(date),
+          type: type);
+      // result
+      //     .add({'day': DateFormat('EE-dd', 'id').format(date), 'total': total});
+      result.add({'day': DateFormat('dd/MM').format(date), 'total': total});
     }
 
     return result;
   }
 
-  Future<List<Map<String, dynamic>>> getTransactionWeek() async {
+  Future<List<Map<String, dynamic>>> getTransactionWeek(
+      {String type = 'expense'}) async {
     List<Map<String, dynamic>>? result = [];
     for (var i = 1; i <= 4; i++) {
-      int total = await getTotalTransactionByWeek(weekNumber: i);
-      result.add({'week': i, 'total': total});
+      int total = await getTotalTransactionByWeek(weekNumber: i, type: type);
+      // ignore: prefer_interpolation_to_compose_strings
+      result.add({'week': "Minggu $i", 'total': total});
     }
 
     return result;

@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:cool_alert/cool_alert.dart';
 import 'package:doku/database/categories/category_repository.dart';
 import 'package:doku/database/transactions/transaction_repository.dart';
@@ -13,7 +15,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:pattern_formatter/numeric_formatter.dart';
 
 class IncomeCreateScreen extends StatefulWidget {
-  const IncomeCreateScreen({Key? key}) : super(key: key);
+  const IncomeCreateScreen({super.key});
 
   @override
   State<IncomeCreateScreen> createState() => _IncomeCreateScreenState();
@@ -174,7 +176,7 @@ class _IncomeCreateScreenState extends State<IncomeCreateScreen> {
                           ),
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
                       Container(
@@ -223,7 +225,7 @@ class _IncomeCreateScreenState extends State<IncomeCreateScreen> {
                                             context,
                                             (MaterialPageRoute(
                                                 builder: (builder) {
-                                              return CategoryScreen();
+                                              return const CategoryScreen();
                                             }))).then((value) {
                                           getCategory();
                                         });
