@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:doku/database/transactions/transaction_repository.dart';
 import 'package:doku/models/transaction_model.dart';
 import 'package:doku/screens/transactions/edit/edit_transaction_screen.dart';
@@ -85,18 +87,18 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
                           children: [
                             Text(
                               DateInstance.id(transactions[index].date!),
-                              style:
-                                  TextStyle(fontSize: 12, color: Colors.grey),
+                              style: const TextStyle(
+                                  fontSize: 12, color: Colors.grey),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 3,
                             ),
                             Text(
                               transactions[index].category!.name ?? '',
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 16),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 3,
                             ),
                             transactions[index].notes != ''
@@ -144,8 +146,8 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
                       setState(() {});
                     });
                   },
-                  title: Text('Ubah Transaksi'),
-                  trailing: Icon(Icons.chevron_right),
+                  title: const Text('Ubah Transaksi'),
+                  trailing: const Icon(Icons.chevron_right),
                 ),
                 ListTile(
                   onTap: () async {
@@ -155,8 +157,8 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
                     setState(() {});
                     Fluttertoast.showToast(msg: 'Transaksi telah dihapus.');
                   },
-                  title: Text('Hapus'),
-                  trailing: Icon(Icons.chevron_right),
+                  title: const Text('Hapus'),
+                  trailing: const Icon(Icons.chevron_right),
                 ),
               ],
             ),

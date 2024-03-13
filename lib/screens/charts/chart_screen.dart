@@ -100,7 +100,7 @@ class _ChartScreenState extends State<ChartScreen> {
               height: 300,
               child: Column(
                 children: [
-                  Row(
+                  const Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
@@ -120,8 +120,8 @@ class _ChartScreenState extends State<ChartScreen> {
                   ),
                   Expanded(
                     child: Container(
-                        margin: EdgeInsets.only(left: 5, right: 5),
-                        padding: EdgeInsets.all(10),
+                        margin: const EdgeInsets.only(left: 5, right: 5),
+                        padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(10)),
@@ -137,35 +137,35 @@ class _ChartScreenState extends State<ChartScreen> {
             SizedBox(
               height: 300,
               child: Container(
-                  margin: EdgeInsets.only(top: 10),
+                  margin: const EdgeInsets.only(top: 10),
                   child: Column(
                     children: [
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.date_range,
                             size: 18,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 5,
                           ),
                           Text(
                             'Grafik Mingguan ($monthTitle)',
-                            style: TextStyle(
+                            style: const TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 14),
                           ),
                         ],
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
                       Expanded(
                           child: Container(
-                              margin: EdgeInsets.only(left: 5, right: 5),
+                              margin: const EdgeInsets.only(left: 5, right: 5),
                               width: MediaQuery.of(context).size.width,
-                              padding: EdgeInsets.all(10),
+                              padding: const EdgeInsets.all(10),
                               decoration: BoxDecoration(
                                   color: Colors.white.withOpacity(0.65),
                                   borderRadius: BorderRadius.circular(10)),
@@ -179,10 +179,10 @@ class _ChartScreenState extends State<ChartScreen> {
             SizedBox(
               height: 300,
               child: Container(
-                  margin: EdgeInsets.only(top: 10),
+                  margin: const EdgeInsets.only(top: 10),
                   child: Column(
                     children: [
-                      Row(
+                      const Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
@@ -200,7 +200,7 @@ class _ChartScreenState extends State<ChartScreen> {
                           ),
                         ],
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
                       Expanded(

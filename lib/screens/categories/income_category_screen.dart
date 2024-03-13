@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:cool_alert/cool_alert.dart';
 import 'package:doku/database/categories/category_repository.dart';
 import 'package:doku/models/category_model.dart';
@@ -5,7 +7,7 @@ import 'package:flutter/material.dart';
 
 class IncomeCategoryScreen extends StatefulWidget {
   final Function(CategoryModel?)? onEdit;
-  const IncomeCategoryScreen({Key? key, this.onEdit}) : super(key: key);
+  const IncomeCategoryScreen({super.key, this.onEdit});
 
   @override
   State<IncomeCategoryScreen> createState() => _IncomeCategoryScreenState();
@@ -25,7 +27,7 @@ class _IncomeCategoryScreenState extends State<IncomeCategoryScreen> {
                   physics: const BouncingScrollPhysics(),
                   itemBuilder: (context, index) {
                     return Container(
-                        padding: EdgeInsets.symmetric(vertical: 10),
+                        padding: const EdgeInsets.symmetric(vertical: 10),
                         child: Row(children: [
                           const SizedBox(
                             width: 15,
@@ -38,10 +40,10 @@ class _IncomeCategoryScreenState extends State<IncomeCategoryScreen> {
                               snapshot.data![index].description != null &&
                                       snapshot.data![index].description != ''
                                   ? Container(
-                                      margin: EdgeInsets.only(top: 3),
+                                      margin: const EdgeInsets.only(top: 3),
                                       child: Text(
                                         snapshot.data![index].description ?? '',
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             color: Colors.grey, fontSize: 12),
                                       ),
                                     )

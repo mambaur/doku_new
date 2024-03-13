@@ -39,10 +39,6 @@ class DateInstance {
   /// Ex. 2022-01-01
   static String id(String date) {
     List<String> listDates = date.split("-");
-    return listDates[2] +
-        " " +
-        idMonths[int.parse(listDates[1]) - 1] +
-        " " +
-        listDates[0];
+    return "${listDates[2]} ${idMonths[int.parse(listDates[1]) - 1]} ${listDates[0]}";
   }
 }

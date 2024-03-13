@@ -8,8 +8,7 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class DetailReportCategory extends StatefulWidget {
   final String? transactionType;
-  const DetailReportCategory({Key? key, this.transactionType})
-      : super(key: key);
+  const DetailReportCategory({super.key, this.transactionType});
 
   @override
   State<DetailReportCategory> createState() => _DetailReportCategoryState();
@@ -39,8 +38,7 @@ class _DetailReportCategoryState extends State<DetailReportCategory> {
 
 class DetailReportChartScreen extends StatefulWidget {
   final String? transactionType;
-  const DetailReportChartScreen({Key? key, this.transactionType})
-      : super(key: key);
+  const DetailReportChartScreen({super.key, this.transactionType});
 
   @override
   State<DetailReportChartScreen> createState() =>
@@ -100,16 +98,16 @@ class _DetailReportChartScreenState extends State<DetailReportChartScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(15),
+        padding: const EdgeInsets.all(15),
         child: Column(
           children: [
-            Container(
+            SizedBox(
               width: MediaQuery.of(context).size.width,
               child: Row(
                 children: [
                   Expanded(
                     child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
                       decoration: BoxDecoration(
                           color: Colors.grey.shade100,
                           borderRadius: BorderRadius.circular(10)),
@@ -136,12 +134,12 @@ class _DetailReportChartScreenState extends State<DetailReportChartScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 5,
                   ),
                   Expanded(
                     child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
                       decoration: BoxDecoration(
                           color: Colors.grey.shade100,
                           borderRadius: BorderRadius.circular(10)),
@@ -171,7 +169,7 @@ class _DetailReportChartScreenState extends State<DetailReportChartScreen> {
                 ],
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             for (TransactionByCategory item in chartByCategory)
@@ -179,12 +177,11 @@ class _DetailReportChartScreenState extends State<DetailReportChartScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    (item.categoryModel?.name ?? '') +
-                        ' (${currencyId.format(item.nominal)})',
-                    style: TextStyle(color: Colors.grey, fontSize: 12),
+                    '${item.categoryModel?.name ?? ''} (${currencyId.format(item.nominal)})',
+                    style: const TextStyle(color: Colors.grey, fontSize: 12),
                   ),
                   Container(
-                    margin: EdgeInsets.only(bottom: 15),
+                    margin: const EdgeInsets.only(bottom: 15),
                     child: Row(
                       children: [
                         Flexible(
@@ -193,8 +190,8 @@ class _DetailReportChartScreenState extends State<DetailReportChartScreen> {
                             lineHeight: 23.0,
                             animation: true,
                             percent: item.percent ?? 0,
-                            padding: EdgeInsets.only(right: 10),
-                            barRadius: Radius.circular(5),
+                            padding: const EdgeInsets.only(right: 10),
+                            barRadius: const Radius.circular(5),
                             backgroundColor: Colors.grey.shade100,
                             progressColor: widget.transactionType == 'income'
                                 ? Colors.green.shade600
@@ -204,8 +201,7 @@ class _DetailReportChartScreenState extends State<DetailReportChartScreen> {
                         Flexible(
                             flex: 2,
                             child: Text(
-                              ((item.percent ?? 0) * 100).toStringAsFixed(1) +
-                                  '%',
+                              '${((item.percent ?? 0) * 100).toStringAsFixed(1)}%',
                               textAlign: TextAlign.end,
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,

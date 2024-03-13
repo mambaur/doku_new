@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:cool_alert/cool_alert.dart';
 import 'package:doku/database/transactions/transaction_repository.dart';
 import 'package:doku/models/transaction_model.dart';
@@ -9,7 +11,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 class ListEditTransactionScreen extends StatefulWidget {
   final String? date;
-  const ListEditTransactionScreen({Key? key, this.date}) : super(key: key);
+  const ListEditTransactionScreen({super.key, this.date});
 
   @override
   State<ListEditTransactionScreen> createState() =>
@@ -44,12 +46,12 @@ class _ListEditTransactionScreenState extends State<ListEditTransactionScreen> {
               onPressed: () {
                 _deleteAllDialog(widget.date ?? '');
               },
-              icon: Icon(Icons.delete_outlined))
+              icon: const Icon(Icons.delete_outlined))
         ],
       ),
       body: CustomScrollView(
           // controller: _scrollController,
-          physics: BouncingScrollPhysics(),
+          physics: const BouncingScrollPhysics(),
           slivers: [
             SliverAppBar(
                 floating: true,
@@ -61,7 +63,7 @@ class _ListEditTransactionScreenState extends State<ListEditTransactionScreen> {
                   child: Center(
                       child: Text(
                     DateInstance.id(widget.date ?? ''),
-                    style: TextStyle(fontWeight: FontWeight.normal),
+                    style: const TextStyle(fontWeight: FontWeight.normal),
                   )),
                 )),
             SliverList(
@@ -69,8 +71,8 @@ class _ListEditTransactionScreenState extends State<ListEditTransactionScreen> {
               listTransactions != null
                   ? ListView.builder(
                       itemCount: listTransactions!.length,
-                      physics: NeverScrollableScrollPhysics(),
-                      padding: EdgeInsets.symmetric(vertical: 10),
+                      physics: const NeverScrollableScrollPhysics(),
+                      padding: const EdgeInsets.symmetric(vertical: 10),
                       shrinkWrap: true,
                       itemBuilder: (context, index) {
                         return GestureDetector(
@@ -91,20 +93,20 @@ class _ListEditTransactionScreenState extends State<ListEditTransactionScreen> {
                                     Text(
                                       DateInstance.id(
                                           listTransactions![index].date!),
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           fontSize: 12, color: Colors.grey),
                                     ),
-                                    SizedBox(
+                                    const SizedBox(
                                       height: 3,
                                     ),
                                     Text(
                                       listTransactions![index].category!.name ??
                                           '',
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 16),
                                     ),
-                                    SizedBox(
+                                    const SizedBox(
                                       height: 3,
                                     ),
                                     listTransactions![index].notes != ''
@@ -156,8 +158,8 @@ class _ListEditTransactionScreenState extends State<ListEditTransactionScreen> {
                       getTransactionByDate();
                     });
                   },
-                  title: Text('Ubah Transaksi'),
-                  trailing: Icon(Icons.chevron_right),
+                  title: const Text('Ubah Transaksi'),
+                  trailing: const Icon(Icons.chevron_right),
                 ),
                 ListTile(
                   onTap: () async {
@@ -168,8 +170,8 @@ class _ListEditTransactionScreenState extends State<ListEditTransactionScreen> {
                     setState(() {});
                     Fluttertoast.showToast(msg: 'Transaksi telah dihapus.');
                   },
-                  title: Text('Hapus'),
-                  trailing: Icon(Icons.chevron_right),
+                  title: const Text('Hapus'),
+                  trailing: const Icon(Icons.chevron_right),
                 ),
               ],
             ),

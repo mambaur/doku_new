@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:cool_alert/cool_alert.dart';
 import 'package:doku/database/categories/category_repository.dart';
 import 'package:doku/models/category_model.dart';
@@ -8,7 +10,7 @@ import 'package:flutter/material.dart';
 
 class CategoryScreen extends StatefulWidget {
   final int? initialIndex;
-  const CategoryScreen({Key? key, this.initialIndex}) : super(key: key);
+  const CategoryScreen({super.key, this.initialIndex});
 
   @override
   State<CategoryScreen> createState() => _CategoryScreenState();
@@ -72,18 +74,18 @@ class _CategoryScreenState extends State<CategoryScreen>
               onPressed: () {
                 _addCategoryDialog();
               },
-              icon: Icon(Icons.add),
+              icon: const Icon(Icons.add),
             )
           ],
           elevation: 0.5,
-          title: Text('Kategori'),
+          title: const Text('Kategori'),
           bottom: TabBar(
             controller: _tabController,
             labelColor: Colors.green.shade500,
-            labelPadding: EdgeInsets.all(15),
+            labelPadding: const EdgeInsets.all(15),
             indicatorColor: Colors.green.shade500,
             unselectedLabelColor: Colors.black.withOpacity(0.8),
-            tabs: [
+            tabs: const [
               Text('Pemasukan'),
               Text('Pengeluaran'),
             ],
@@ -142,7 +144,7 @@ class _CategoryScreenState extends State<CategoryScreen>
                                 borderSide:
                                     BorderSide(color: Colors.green.shade700),
                               ),
-                              label: Text('Nama Kategori')),
+                              label: const Text('Nama Kategori')),
                         ),
                         TextFormField(
                           controller: _descriptionStoreController,
@@ -155,7 +157,7 @@ class _CategoryScreenState extends State<CategoryScreen>
                                 borderSide:
                                     BorderSide(color: Colors.green.shade700),
                               ),
-                              label: Text('Deskripsi (Opsional)')),
+                              label: const Text('Deskripsi (Opsional)')),
                         ),
                       ],
                     ),
@@ -185,7 +187,7 @@ class _CategoryScreenState extends State<CategoryScreen>
                         value: value,
                         child: Text(
                           value,
-                          style: TextStyle(color: Colors.black),
+                          style: const TextStyle(color: Colors.black),
                         ),
                       );
                     }).toList(),
@@ -266,7 +268,7 @@ class _CategoryScreenState extends State<CategoryScreen>
                                 borderSide:
                                     BorderSide(color: Colors.green.shade700),
                               ),
-                              label: Text('Nama Kategori')),
+                              label: const Text('Nama Kategori')),
                         ),
                         TextFormField(
                           controller: _descriptionEditController,
@@ -279,7 +281,7 @@ class _CategoryScreenState extends State<CategoryScreen>
                                 borderSide:
                                     BorderSide(color: Colors.green.shade700),
                               ),
-                              label: Text('Deskripsi (Opsional)')),
+                              label: const Text('Deskripsi (Opsional)')),
                         ),
                       ],
                     ),

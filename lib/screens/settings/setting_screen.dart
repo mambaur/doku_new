@@ -5,7 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SettingScreen extends StatefulWidget {
-  const SettingScreen({Key? key}) : super(key: key);
+  const SettingScreen({super.key});
 
   @override
   State<SettingScreen> createState() => _SettingScreenState();
@@ -14,8 +14,8 @@ class SettingScreen extends StatefulWidget {
 class _SettingScreenState extends State<SettingScreen> {
   String urlGooglePlay =
       'https://play.google.com/store/apps/details?id=com.caraguna.dompet_apps';
-  void _launchUrl(String _url) async {
-    if (!await launchUrl(Uri.parse(_url))) throw 'Could not launch $_url';
+  void _launchUrl(String url) async {
+    if (!await launchUrl(Uri.parse(url))) throw 'Could not launch $url';
   }
 
   // PackageInfo? packageInfo;
@@ -62,7 +62,7 @@ class _SettingScreenState extends State<SettingScreen> {
                     onTap: () {
                       Navigator.push(context,
                           MaterialPageRoute(builder: (builder) {
-                        return CategoryScreen();
+                        return const CategoryScreen();
                       }));
                     },
                     contentPadding: EdgeInsets.zero,
@@ -70,7 +70,7 @@ class _SettingScreenState extends State<SettingScreen> {
                       'Kategori',
                       style: TextStyle(fontSize: 14),
                     ),
-                    trailing: Icon(Icons.chevron_right),
+                    trailing: const Icon(Icons.chevron_right),
                   ),
                   ListTile(
                     onTap: () {
@@ -82,15 +82,15 @@ class _SettingScreenState extends State<SettingScreen> {
                       'Bahasa',
                       style: TextStyle(fontSize: 14),
                     ),
-                    trailing: Icon(Icons.chevron_right),
+                    trailing: const Icon(Icons.chevron_right),
                   ),
                 ],
               ),
             ),
             Container(
-              margin: EdgeInsets.only(bottom: 15),
+              margin: const EdgeInsets.only(bottom: 15),
               color: Colors.white,
-              padding: EdgeInsets.all(15),
+              padding: const EdgeInsets.all(15),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -106,11 +106,11 @@ class _SettingScreenState extends State<SettingScreen> {
                       _launchUrl(urlGooglePlay);
                     },
                     contentPadding: EdgeInsets.zero,
-                    title: Text(
+                    title: const Text(
                       'Info Update',
                       style: TextStyle(fontSize: 14),
                     ),
-                    trailing: Icon(Icons.chevron_right),
+                    trailing: const Icon(Icons.chevron_right),
                   ),
                   ListTile(
                     onTap: () {
@@ -120,11 +120,11 @@ class _SettingScreenState extends State<SettingScreen> {
                       }));
                     },
                     contentPadding: EdgeInsets.zero,
-                    title: Text(
+                    title: const Text(
                       'Tentang Aplikasi',
                       style: TextStyle(fontSize: 14),
                     ),
-                    trailing: Icon(Icons.chevron_right),
+                    trailing: const Icon(Icons.chevron_right),
                   ),
                   // ListTile(
                   //   onTap: () {

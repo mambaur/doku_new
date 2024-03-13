@@ -6,7 +6,7 @@ import 'package:doku/utils/date_instance.dart';
 import 'package:flutter/material.dart';
 
 class AllReportScreen extends StatefulWidget {
-  const AllReportScreen({Key? key}) : super(key: key);
+  const AllReportScreen({super.key});
 
   @override
   State<AllReportScreen> createState() => _AllReportScreenState();
@@ -69,14 +69,14 @@ class _AllReportScreenState extends State<AllReportScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Semua Laporan'),
+        title: const Text('Semua Laporan'),
         elevation: 0.5,
         centerTitle: true,
       ),
       body: ListView.builder(
           controller: _scrollController,
-          physics: BouncingScrollPhysics(),
-          padding: EdgeInsets.symmetric(vertical: 10),
+          physics: const BouncingScrollPhysics(),
+          padding: const EdgeInsets.symmetric(vertical: 10),
           shrinkWrap: true,
           itemCount:
               hasReachedMax ? transactions.length : transactions.length + 1,
@@ -84,22 +84,22 @@ class _AllReportScreenState extends State<AllReportScreen> {
             if (index < transactions.length) {
               return Container(
                 color: Colors.white,
-                margin: EdgeInsets.only(bottom: 10),
-                padding: EdgeInsets.all(15),
+                margin: const EdgeInsets.only(bottom: 10),
+                padding: const EdgeInsets.all(15),
                 child: Column(
                   children: [
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.date_range,
                           size: 18,
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 3,
                         ),
                         Text(DateInstance.id(transactions[index].date!)),
-                        Spacer(),
+                        const Spacer(),
                         GestureDetector(
                           onTap: () {
                             Navigator.push(context,
@@ -111,7 +111,7 @@ class _AllReportScreenState extends State<AllReportScreen> {
                               setState(() {});
                             });
                           },
-                          child: Row(
+                          child: const Row(
                             children: [
                               Icon(
                                 Icons.edit,
@@ -126,7 +126,7 @@ class _AllReportScreenState extends State<AllReportScreen> {
                         ),
                       ],
                     ),
-                    Divider(
+                    const Divider(
                       thickness: 1,
                     ),
                     for (TransactionModel item
@@ -140,8 +140,8 @@ class _AllReportScreenState extends State<AllReportScreen> {
                             item.notes != null ? Text(item.notes ?? '') : null,
                         dense: true,
                         trailing: Container(
-                          padding:
-                              EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 5, horizontal: 10),
                           child: Text(
                             currencyId.format(item.nominal),
                             style: TextStyle(
@@ -154,28 +154,26 @@ class _AllReportScreenState extends State<AllReportScreen> {
                         ),
                       ),
                     const Divider(),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
                     Row(
                       children: [
-                        Container(
-                          child: Text(
-                            'Total',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
+                        const Text(
+                          'Total',
+                          style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                         const Spacer(),
                         Container(
-                          padding:
-                              EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 5, horizontal: 10),
                           decoration: BoxDecoration(
                               border: Border.all(color: Colors.grey.shade300),
                               borderRadius: BorderRadius.circular(15)),
                           child: Text(
                             currencyId.format(totalTransaction(
                                 transactions[index].listTransactions!)),
-                            style: TextStyle(
+                            style: const TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 14),

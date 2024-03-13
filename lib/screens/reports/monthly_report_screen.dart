@@ -6,7 +6,7 @@ import 'package:doku/utils/date_instance.dart';
 import 'package:flutter/material.dart';
 
 class MonthlyReportScreen extends StatefulWidget {
-  const MonthlyReportScreen({Key? key}) : super(key: key);
+  const MonthlyReportScreen({super.key});
 
   @override
   State<MonthlyReportScreen> createState() => _MonthlyReportScreenState();
@@ -112,7 +112,7 @@ class _MonthlyReportScreenState extends State<MonthlyReportScreen> {
                 children: [
                   Expanded(
                     child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
                       decoration: BoxDecoration(
                           color: Colors.grey.shade100,
                           borderRadius: BorderRadius.circular(10)),
@@ -141,12 +141,12 @@ class _MonthlyReportScreenState extends State<MonthlyReportScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 5,
                   ),
                   Expanded(
                     child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
                       decoration: BoxDecoration(
                           color: Colors.grey.shade100,
                           borderRadius: BorderRadius.circular(10)),
@@ -191,8 +191,8 @@ class _MonthlyReportScreenState extends State<MonthlyReportScreen> {
                     if (index < transactions.length) {
                       return Container(
                         color: Colors.white,
-                        margin: EdgeInsets.only(bottom: 10),
-                        padding: EdgeInsets.all(15),
+                        margin: const EdgeInsets.only(bottom: 10),
+                        padding: const EdgeInsets.all(15),
                         child: Column(
                           children: [
                             Row(
@@ -219,9 +219,9 @@ class _MonthlyReportScreenState extends State<MonthlyReportScreen> {
                                       setState(() {});
                                     });
                                   },
-                                  child: Row(
+                                  child: const Row(
                                     children: [
-                                      const Icon(
+                                      Icon(
                                         Icons.edit,
                                         size: 18,
                                       ),
@@ -234,7 +234,7 @@ class _MonthlyReportScreenState extends State<MonthlyReportScreen> {
                                 ),
                               ],
                             ),
-                            Divider(
+                            const Divider(
                               thickness: 1,
                             ),
                             for (TransactionModel item
@@ -249,7 +249,7 @@ class _MonthlyReportScreenState extends State<MonthlyReportScreen> {
                                     : null,
                                 dense: true,
                                 trailing: Container(
-                                  padding: EdgeInsets.symmetric(
+                                  padding: const EdgeInsets.symmetric(
                                       vertical: 5, horizontal: 10),
                                   child: Text(
                                     currencyId.format(item.nominal),
@@ -263,21 +263,18 @@ class _MonthlyReportScreenState extends State<MonthlyReportScreen> {
                                 ),
                               ),
                             const Divider(),
-                            SizedBox(
+                            const SizedBox(
                               height: 10,
                             ),
                             Row(
                               children: [
-                                Container(
-                                  child: Text(
-                                    'Total',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
+                                const Text(
+                                  'Total',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
                                 const Spacer(),
                                 Container(
-                                  padding: EdgeInsets.symmetric(
+                                  padding: const EdgeInsets.symmetric(
                                       vertical: 5, horizontal: 10),
                                   decoration: BoxDecoration(
                                       border: Border.all(
@@ -286,7 +283,7 @@ class _MonthlyReportScreenState extends State<MonthlyReportScreen> {
                                   child: Text(
                                     currencyId.format(totalTransaction(
                                         transactions[index].listTransactions!)),
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         color: Colors.black,
                                         fontWeight: FontWeight.bold,
                                         fontSize: 14),

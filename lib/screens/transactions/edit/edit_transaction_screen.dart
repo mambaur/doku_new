@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:cool_alert/cool_alert.dart';
 import 'package:doku/database/categories/category_repository.dart';
 import 'package:doku/database/transactions/transaction_repository.dart';
@@ -13,8 +15,7 @@ import 'package:pattern_formatter/numeric_formatter.dart';
 
 class EditTransactionScreen extends StatefulWidget {
   final TransactionModel? transactionModel;
-  const EditTransactionScreen({Key? key, this.transactionModel})
-      : super(key: key);
+  const EditTransactionScreen({super.key, this.transactionModel});
 
   @override
   State<EditTransactionScreen> createState() => _EditTransactionScreenState();
@@ -54,7 +55,6 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
   }
 
   Future getCategory() async {
-    print(widget.transactionModel!.category!.type);
     List<CategoryModel>? data =
         await _categoryRepo.all(type: widget.transactionModel!.category!.type);
 
@@ -231,7 +231,7 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
                           textAlign: TextAlign.start,
                           textAlignVertical: TextAlignVertical.top,
                           // expands: true,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                               contentPadding: EdgeInsets.all(5),
                               hintText: 'Keterangan (opsional)'),
                         ),

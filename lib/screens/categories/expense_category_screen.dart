@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:cool_alert/cool_alert.dart';
 import 'package:doku/database/categories/category_repository.dart';
 import 'package:doku/models/category_model.dart';
@@ -5,7 +7,7 @@ import 'package:flutter/material.dart';
 
 class ExpenseCategoryScreen extends StatefulWidget {
   final Function(CategoryModel?)? onEdit;
-  const ExpenseCategoryScreen({Key? key, this.onEdit}) : super(key: key);
+  const ExpenseCategoryScreen({super.key, this.onEdit});
 
   @override
   State<ExpenseCategoryScreen> createState() => _ExpenseCategoryScreenState();
@@ -23,12 +25,12 @@ class _ExpenseCategoryScreenState extends State<ExpenseCategoryScreen> {
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return ListView.separated(
-                  physics: BouncingScrollPhysics(),
+                  physics: const BouncingScrollPhysics(),
                   itemBuilder: (context, index) {
                     return Container(
-                        padding: EdgeInsets.symmetric(vertical: 10),
+                        padding: const EdgeInsets.symmetric(vertical: 10),
                         child: Row(children: [
-                          SizedBox(
+                          const SizedBox(
                             width: 15,
                           ),
                           Expanded(
@@ -41,14 +43,14 @@ class _ExpenseCategoryScreenState extends State<ExpenseCategoryScreen> {
                               snapshot.data![index].description != null &&
                                       snapshot.data![index].description != ''
                                   ? Container(
-                                      margin: EdgeInsets.only(top: 3),
+                                      margin: const EdgeInsets.only(top: 3),
                                       child: Text(
                                         snapshot.data![index].description ?? '',
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             color: Colors.grey, fontSize: 12),
                                       ),
                                     )
-                                  : Container(),
+                                  : const SizedBox(),
                             ],
                           )),
                           IconButton(
@@ -66,7 +68,7 @@ class _ExpenseCategoryScreenState extends State<ExpenseCategoryScreen> {
                         ]));
                   },
                   separatorBuilder: (context, index) {
-                    return Divider(
+                    return const Divider(
                       height: 1,
                       thickness: 0.7,
                     );

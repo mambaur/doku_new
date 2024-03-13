@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:doku/database/transactions/transaction_repository.dart';
 import 'package:doku/models/transaction_model.dart';
 import 'package:doku/screens/transactions/edit/edit_transaction_screen.dart';
@@ -7,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class IncomeScreen extends StatefulWidget {
-  const IncomeScreen({Key? key}) : super(key: key);
+  const IncomeScreen({super.key});
 
   @override
   State<IncomeScreen> createState() => _IncomeScreenState();
@@ -85,17 +87,18 @@ class _IncomeScreenState extends State<IncomeScreen> {
                         children: [
                           Text(
                             DateInstance.id(transactions[index].date!),
-                            style: TextStyle(fontSize: 12, color: Colors.grey),
+                            style: const TextStyle(
+                                fontSize: 12, color: Colors.grey),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 3,
                           ),
                           Text(
                             transactions[index].category!.name ?? '',
-                            style: TextStyle(
+                            style: const TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 16),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 3,
                           ),
                           transactions[index].notes != ''
@@ -144,8 +147,8 @@ class _IncomeScreenState extends State<IncomeScreen> {
                       setState(() {});
                     });
                   },
-                  title: Text('Ubah Transaksi'),
-                  trailing: Icon(Icons.chevron_right),
+                  title: const Text('Ubah Transaksi'),
+                  trailing: const Icon(Icons.chevron_right),
                 ),
                 ListTile(
                   onTap: () async {
@@ -155,8 +158,8 @@ class _IncomeScreenState extends State<IncomeScreen> {
                     setState(() {});
                     Fluttertoast.showToast(msg: 'Transaksi telah dihapus.');
                   },
-                  title: Text('Hapus'),
-                  trailing: Icon(Icons.chevron_right),
+                  title: const Text('Hapus'),
+                  trailing: const Icon(Icons.chevron_right),
                 ),
               ],
             ),

@@ -6,7 +6,7 @@ import 'package:doku/utils/date_instance.dart';
 import 'package:flutter/material.dart';
 
 class AnnualReportScreen extends StatefulWidget {
-  const AnnualReportScreen({Key? key}) : super(key: key);
+  const AnnualReportScreen({super.key});
 
   @override
   State<AnnualReportScreen> createState() => _AnnualReportScreenState();
@@ -80,7 +80,7 @@ class _AnnualReportScreenState extends State<AnnualReportScreen> {
       ),
       body: CustomScrollView(
           controller: _scrollController,
-          physics: BouncingScrollPhysics(),
+          physics: const BouncingScrollPhysics(),
           slivers: [
             SliverAppBar(
                 floating: true,
@@ -92,7 +92,8 @@ class _AnnualReportScreenState extends State<AnnualReportScreen> {
                   child: ListView.builder(
                       itemCount: years.length,
                       shrinkWrap: true,
-                      padding: EdgeInsets.only(bottom: 5, left: 5, top: 5),
+                      padding:
+                          const EdgeInsets.only(bottom: 5, left: 5, top: 5),
                       scrollDirection: Axis.horizontal,
                       physics: const BouncingScrollPhysics(),
                       itemBuilder: (context, index) {
@@ -106,9 +107,9 @@ class _AnnualReportScreenState extends State<AnnualReportScreen> {
                             setState(() {});
                           },
                           child: Container(
-                            padding: EdgeInsets.symmetric(
+                            padding: const EdgeInsets.symmetric(
                                 vertical: 5, horizontal: 15),
-                            margin: EdgeInsets.only(right: 7),
+                            margin: const EdgeInsets.only(right: 7),
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
                                 color: years[index] == selectedYear
@@ -144,23 +145,23 @@ class _AnnualReportScreenState extends State<AnnualReportScreen> {
                     if (index < transactions.length) {
                       return Container(
                         color: Colors.white,
-                        margin: EdgeInsets.only(bottom: 10),
-                        padding: EdgeInsets.all(15),
+                        margin: const EdgeInsets.only(bottom: 10),
+                        padding: const EdgeInsets.all(15),
                         child: Column(
                           children: [
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Icon(
+                                const Icon(
                                   Icons.date_range,
                                   size: 18,
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   width: 3,
                                 ),
                                 Text(
                                     DateInstance.id(transactions[index].date!)),
-                                Spacer(),
+                                const Spacer(),
                                 GestureDetector(
                                   onTap: () {
                                     Navigator.push(context,
@@ -172,7 +173,7 @@ class _AnnualReportScreenState extends State<AnnualReportScreen> {
                                       setState(() {});
                                     });
                                   },
-                                  child: Row(
+                                  child: const Row(
                                     children: [
                                       Icon(
                                         Icons.edit,
@@ -187,7 +188,7 @@ class _AnnualReportScreenState extends State<AnnualReportScreen> {
                                 ),
                               ],
                             ),
-                            Divider(
+                            const Divider(
                               thickness: 1,
                             ),
                             for (TransactionModel item
@@ -202,7 +203,7 @@ class _AnnualReportScreenState extends State<AnnualReportScreen> {
                                     : null,
                                 dense: true,
                                 trailing: Container(
-                                  padding: EdgeInsets.symmetric(
+                                  padding: const EdgeInsets.symmetric(
                                       vertical: 5, horizontal: 10),
                                   child: Text(
                                     currencyId.format(item.nominal),
@@ -216,21 +217,18 @@ class _AnnualReportScreenState extends State<AnnualReportScreen> {
                                 ),
                               ),
                             const Divider(),
-                            SizedBox(
+                            const SizedBox(
                               height: 10,
                             ),
                             Row(
                               children: [
-                                Container(
-                                  child: Text(
-                                    'Total',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
+                                const Text(
+                                  'Total',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
                                 const Spacer(),
                                 Container(
-                                  padding: EdgeInsets.symmetric(
+                                  padding: const EdgeInsets.symmetric(
                                       vertical: 5, horizontal: 10),
                                   decoration: BoxDecoration(
                                       border: Border.all(
@@ -239,7 +237,7 @@ class _AnnualReportScreenState extends State<AnnualReportScreen> {
                                   child: Text(
                                     currencyId.format(totalTransaction(
                                         transactions[index].listTransactions!)),
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         color: Colors.black,
                                         fontWeight: FontWeight.bold,
                                         fontSize: 14),

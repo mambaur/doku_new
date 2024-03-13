@@ -6,7 +6,7 @@ import 'package:doku/utils/date_instance.dart';
 import 'package:flutter/material.dart';
 
 class WeeklyReportScreen extends StatefulWidget {
-  const WeeklyReportScreen({Key? key}) : super(key: key);
+  const WeeklyReportScreen({super.key});
 
   @override
   State<WeeklyReportScreen> createState() => _WeeklyReportScreenState();
@@ -123,7 +123,7 @@ class _WeeklyReportScreenState extends State<WeeklyReportScreen> {
                 children: [
                   Expanded(
                     child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
                       decoration: BoxDecoration(
                           color: Colors.grey.shade100,
                           borderRadius: BorderRadius.circular(10)),
@@ -152,12 +152,12 @@ class _WeeklyReportScreenState extends State<WeeklyReportScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 5,
                   ),
                   Expanded(
                     child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
                       decoration: BoxDecoration(
                           color: Colors.grey.shade100,
                           borderRadius: BorderRadius.circular(10)),
@@ -186,12 +186,12 @@ class _WeeklyReportScreenState extends State<WeeklyReportScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 5,
                   ),
                   Expanded(
                     child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
                       decoration: BoxDecoration(
                           color: Colors.grey.shade100,
                           borderRadius: BorderRadius.circular(10)),
@@ -236,18 +236,18 @@ class _WeeklyReportScreenState extends State<WeeklyReportScreen> {
                     if (index < transactions.length) {
                       return Container(
                         color: Colors.white,
-                        margin: EdgeInsets.only(bottom: 10),
-                        padding: EdgeInsets.all(15),
+                        margin: const EdgeInsets.only(bottom: 10),
+                        padding: const EdgeInsets.all(15),
                         child: Column(
                           children: [
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Icon(
+                                const Icon(
                                   Icons.date_range,
                                   size: 18,
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   width: 3,
                                 ),
                                 Text(
@@ -264,7 +264,7 @@ class _WeeklyReportScreenState extends State<WeeklyReportScreen> {
                                       setState(() {});
                                     });
                                   },
-                                  child: Row(
+                                  child: const Row(
                                     children: [
                                       Icon(
                                         Icons.edit,
@@ -279,7 +279,7 @@ class _WeeklyReportScreenState extends State<WeeklyReportScreen> {
                                 ),
                               ],
                             ),
-                            Divider(
+                            const Divider(
                               thickness: 0.7,
                             ),
                             for (TransactionModel item
@@ -288,13 +288,14 @@ class _WeeklyReportScreenState extends State<WeeklyReportScreen> {
                                 contentPadding: EdgeInsets.zero,
                                 title: Text(
                                     '${item.category!.name}, ${(item.category!.type == "income" ? "Pemasukan" : "Pengeluaran")}',
-                                    style: TextStyle(fontSize: 14)),
+                                    style: const TextStyle(fontSize: 14)),
                                 subtitle: item.notes != null
                                     ? Text(item.notes ?? '')
                                     : null,
                                 dense: true,
                                 trailing: Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 10),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10),
                                   child: Text(
                                     currencyId.format(item.nominal),
                                     style: TextStyle(
@@ -307,21 +308,18 @@ class _WeeklyReportScreenState extends State<WeeklyReportScreen> {
                                 ),
                               ),
                             const Divider(),
-                            SizedBox(
+                            const SizedBox(
                               height: 10,
                             ),
                             Row(
                               children: [
-                                Container(
-                                  child: Text(
-                                    'Total',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
+                                const Text(
+                                  'Total',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
                                 const Spacer(),
                                 Container(
-                                  padding: EdgeInsets.symmetric(
+                                  padding: const EdgeInsets.symmetric(
                                       vertical: 5, horizontal: 10),
                                   decoration: BoxDecoration(
                                       border: Border.all(
@@ -330,7 +328,7 @@ class _WeeklyReportScreenState extends State<WeeklyReportScreen> {
                                   child: Text(
                                     currencyId.format(totalTransaction(
                                         transactions[index].listTransactions!)),
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         color: Colors.black,
                                         fontWeight: FontWeight.bold,
                                         fontSize: 14),
