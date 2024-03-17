@@ -108,6 +108,26 @@ class TransactionRepository {
     return listGroupTransactions;
   }
 
+  Future<int?> countWeeklyTransactions(
+      {int weekNumber = 1, String? month, int? year, String? type}) async {
+    // 1 week is 7 day
+    String startDay = ((7 * weekNumber) - 7).toString().padLeft(2, '0');
+    String endDay = (int.parse(startDay) + 7).toString().padLeft(2, '0');
+
+    String whereType = '';
+
+    if (type != null) {
+      whereType =
+          'AND ${dbInstance.categoryTable}.${dbInstance.categoryType} = "$type"';
+    }
+
+    Database db = await dbInstance.database;
+    final data = await db.rawQuery(
+        'SELECT SUM(${dbInstance.transactionTable}.${dbInstance.transactionNominal}) AS total FROM ${dbInstance.transactionTable} JOIN ${dbInstance.categoryTable} ON ${dbInstance.categoryTable}.${dbInstance.categoryId}=${dbInstance.transactionTable}.${dbInstance.transactionCategoryId} WHERE ${dbInstance.transactionTable}.${dbInstance.transactionDate} >= "$year-$month-$startDay" AND ${dbInstance.transactionTable}.${dbInstance.transactionDate} <= "$year-$month-$endDay" $whereType',
+        []);
+    return int.parse((data[0]['total'] ?? 0).toString());
+  }
+
   Future<List<GroupingTransactionModel>> monthlyTransactions(
       {String? month, int? year, int? limit, int? page}) async {
     // Setup pagination
@@ -131,6 +151,22 @@ class TransactionRepository {
       }
     }
     return listGroupTransactions;
+  }
+
+  Future<int?> countMonthlyTransactions(
+      {String? month, int? year, String? type}) async {
+    String whereType = '';
+
+    if (type != null) {
+      whereType =
+          'AND ${dbInstance.categoryTable}.${dbInstance.categoryType} = "$type"';
+    }
+
+    Database db = await dbInstance.database;
+    final data = await db.rawQuery(
+        'SELECT SUM(${dbInstance.transactionTable}.${dbInstance.transactionNominal}) AS total FROM ${dbInstance.transactionTable} JOIN ${dbInstance.categoryTable} ON ${dbInstance.categoryTable}.${dbInstance.categoryId}=${dbInstance.transactionTable}.${dbInstance.transactionCategoryId} WHERE ${dbInstance.transactionTable}.${dbInstance.transactionDate} >= "$year-$month-01" AND ${dbInstance.transactionTable}.${dbInstance.transactionDate} <= "$year-$month-31" $whereType',
+        []);
+    return int.parse((data[0]['total'] ?? 0).toString());
   }
 
   Future<List<GroupingTransactionModel>> annualTransactions(
@@ -158,6 +194,22 @@ class TransactionRepository {
     return listGroupTransactions;
   }
 
+  Future<int?> countAnnualTransactions({int? year, String? type}) async {
+    String whereType = '';
+
+    if (type != null) {
+      whereType =
+          'AND ${dbInstance.categoryTable}.${dbInstance.categoryType} = "$type"';
+    }
+
+    Database db = await dbInstance.database;
+    final data = await db.rawQuery(
+        'SELECT SUM(${dbInstance.transactionTable}.${dbInstance.transactionNominal}) AS total FROM ${dbInstance.transactionTable} JOIN ${dbInstance.categoryTable} ON ${dbInstance.categoryTable}.${dbInstance.categoryId}=${dbInstance.transactionTable}.${dbInstance.transactionCategoryId} WHERE ${dbInstance.transactionTable}.${dbInstance.transactionDate} >= "$year-01-01" AND ${dbInstance.transactionTable}.${dbInstance.transactionDate} <= "$year-12-31" $whereType',
+        []);
+
+    return int.parse((data[0]['total'] ?? 0).toString());
+  }
+
   Future<List<GroupingTransactionModel>> allTransactions(
       {int? limit, int? page}) async {
     // Setup pagination
@@ -181,6 +233,21 @@ class TransactionRepository {
       }
     }
     return listGroupTransactions;
+  }
+
+  Future<int?> countAllTransactions({String? type}) async {
+    String whereType = '';
+
+    if (type != null) {
+      whereType =
+          'AND ${dbInstance.categoryTable}.${dbInstance.categoryType} = "$type"';
+    }
+
+    Database db = await dbInstance.database;
+    final data = await db.rawQuery(
+        'SELECT SUM(${dbInstance.transactionTable}.${dbInstance.transactionNominal}) AS total FROM ${dbInstance.transactionTable} JOIN ${dbInstance.categoryTable} ON ${dbInstance.categoryTable}.${dbInstance.categoryId}=${dbInstance.transactionTable}.${dbInstance.transactionCategoryId}  $whereType',
+        []);
+    return int.parse((data[0]['total'] ?? 0).toString());
   }
 
   Future<int?> totalTransaction(
