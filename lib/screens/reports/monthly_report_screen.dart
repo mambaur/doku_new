@@ -1,6 +1,4 @@
-// ignore_for_file: depend_on_referenced_packages
-
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:document_file_save_plus/document_file_save_plus.dart';
 import 'package:doku/database/transactions/transaction_repository.dart';
@@ -10,8 +8,7 @@ import 'package:doku/utils/currency_format.dart';
 import 'package:doku/utils/date_instance.dart';
 import 'package:flutter/material.dart';
 import 'package:excel/excel.dart' as ex;
-import 'package:path_provider/path_provider.dart';
-import 'package:path/path.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class MonthlyReportScreen extends StatefulWidget {
   const MonthlyReportScreen({super.key});
@@ -130,22 +127,22 @@ class _MonthlyReportScreenState extends State<MonthlyReportScreen> {
             ex.TextCellValue(data[i].listTransactions?[j].date ?? '');
 
         var cellDesc = sheet.cell(
-            ex.CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: indexRow));
+            ex.CellIndex.indexByColumnRow(columnIndex: 1, rowIndex: indexRow));
         cellDesc.value =
             ex.TextCellValue(data[i].listTransactions?[j].notes ?? '');
 
         var cellCategory = sheet.cell(
-            ex.CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: indexRow));
+            ex.CellIndex.indexByColumnRow(columnIndex: 2, rowIndex: indexRow));
         cellCategory.value =
             ex.TextCellValue(data[i].listTransactions?[j].category?.name ?? '');
 
         var cellType = sheet.cell(
-            ex.CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: indexRow));
+            ex.CellIndex.indexByColumnRow(columnIndex: 3, rowIndex: indexRow));
         cellType.value =
             ex.TextCellValue(data[i].listTransactions?[j].category?.type ?? '');
 
         var cellNominal = sheet.cell(
-            ex.CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: indexRow));
+            ex.CellIndex.indexByColumnRow(columnIndex: 4, rowIndex: indexRow));
         cellNominal.value =
             ex.IntCellValue(data[i].listTransactions?[j].nominal ?? 0);
 
@@ -156,16 +153,15 @@ class _MonthlyReportScreenState extends State<MonthlyReportScreen> {
     // excel.save(fileName: 'DOKU: Laporan Mingguan - ');
 
     var fileBytes = excel.save();
-    var directory = await getApplicationDocumentsDirectory();
 
-    File file = File(join("$directory/DOKU: Laporan Bulanan.xlsx"))
-      ..createSync(recursive: true)
-      ..writeAsBytesSync(fileBytes!);
+    Uint8List uint8List = Uint8List.fromList(fileBytes!);
 
     await DocumentFileSavePlus().saveFile(
-        await file.readAsBytes(),
+        uint8List,
         "DOKU: Laporan Bulanan.xlsx",
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+
+    Fluttertoast.showToast(msg: "Download berhasil");
   }
 
   @override

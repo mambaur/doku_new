@@ -2,6 +2,7 @@ import 'package:doku/database/transactions/transaction_repository.dart';
 import 'package:doku/models/transaction_model.dart';
 import 'package:doku/screens/categories/category_screen.dart';
 import 'package:doku/screens/charts/chart_screen.dart';
+import 'package:doku/screens/imports/import_screen.dart';
 import 'package:doku/screens/others/detail_report_category.dart';
 import 'package:doku/screens/reports/all_report_screen.dart';
 import 'package:doku/screens/reports/annual_report_screen.dart';
@@ -288,6 +289,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
                 leading: const Icon(Icons.add_circle),
                 title: const Text("Tambah Transaksi")),
+            ListTile(
+                onTap: () {
+                  _scaffoldKey.currentState?.openEndDrawer();
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return const ImportScreen();
+                  }));
+                },
+                leading: const Icon(Icons.import_export),
+                title: const Text("Import")),
             ListTile(
                 onTap: () {
                   _scaffoldKey.currentState?.openEndDrawer();
