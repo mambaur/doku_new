@@ -66,7 +66,7 @@ class _IncomeCreateScreenState extends State<IncomeCreateScreen> {
   }
 
   Future storeTransaction() async {
-    await Future.delayed(const Duration(seconds: 1));
+    await Future.delayed(const Duration(milliseconds: 500));
     TransactionModel transactionModel = TransactionModel(
         nominal: int.parse(CurrencyFormat.toNumber(_nominalController.text)),
         categoryId: selectedCategory!.id,

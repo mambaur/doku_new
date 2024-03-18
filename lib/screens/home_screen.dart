@@ -287,7 +287,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   _scaffoldKey.currentState?.openEndDrawer();
                   _optionTransactionDialog();
                 },
-                leading: const Icon(Icons.add_circle),
+                leading: const Icon(Icons.add_circle_outline),
                 title: const Text("Tambah Transaksi")),
             ListTile(
                 onTap: () {
@@ -305,7 +305,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     return const CategoryScreen();
                   }));
                 },
-                leading: const Icon(Icons.category),
+                leading: const Icon(Icons.category_outlined),
                 title: const Text("Kategori")),
             ListTile(
                 onTap: () {
@@ -314,7 +314,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     return const SettingScreen();
                   }));
                 },
-                leading: const Icon(Icons.warning),
+                leading: const Icon(Icons.warning_amber),
                 title: const Text("Disclaimer")),
             ListTile(
                 onTap: () {
@@ -323,7 +323,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     return const SettingScreen();
                   }));
                 },
-                leading: const Icon(Icons.question_mark),
+                leading: const Icon(Icons.question_mark_outlined),
                 title: const Text("FAQ")),
             ListTile(
                 onTap: () {
@@ -332,7 +332,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     return const SettingScreen();
                   }));
                 },
-                leading: const Icon(Icons.question_answer),
+                leading: const Icon(Icons.question_answer_outlined),
                 title: const Text("Kritik & Saran")),
             ListTile(
                 onTap: () {
@@ -341,7 +341,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     return const SettingScreen();
                   }));
                 },
-                leading: const Icon(Icons.settings),
+                leading: const Icon(Icons.settings_outlined),
                 title: const Text("Pengaturan")),
           ]),
         ),

@@ -35,6 +35,17 @@ class CategoryRepository {
         where: '${dbInstance.categoryId} = ?', whereArgs: [id]);
   }
 
+  Future<CategoryModel?> firstWhereName(String name) async {
+    Database db = await dbInstance.database;
+    final data = await db.rawQuery(
+        'SELECT * FROM ${dbInstance.categoryTable} WHERE ${dbInstance.categoryTable}.${dbInstance.categoryName}="$name" ORDER BY ${dbInstance.categoryTable}.${dbInstance.categoryCreatedAt} DESC LIMIT 1',
+        []);
+    if (data.isNotEmpty) {
+      return CategoryModel.fromJson(data[0]);
+    }
+    return null;
+  }
+
   Future<int> delete(int id) async {
     Database db = await dbInstance.database;
     return await db.delete(dbInstance.categoryTable,
