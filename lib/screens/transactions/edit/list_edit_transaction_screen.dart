@@ -79,6 +79,9 @@ class _ListEditTransactionScreenState extends State<ListEditTransactionScreen> {
                           onLongPress: () async {
                             _optionEditDialog(index);
                           },
+                          onTap: () async {
+                            _optionEditDialog(index);
+                          },
                           child: Container(
                             padding: const EdgeInsets.all(15),
                             margin: const EdgeInsets.only(bottom: 10),

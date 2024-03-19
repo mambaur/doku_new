@@ -71,7 +71,7 @@ class _IncomeScreenState extends State<IncomeScreen> {
           itemBuilder: (context, index) {
             if (index < transactions.length) {
               return GestureDetector(
-                onLongPress: () async {
+                onTap: () async {
                   _optionEditDialog(transactions[index]);
                 },
                 child: Container(

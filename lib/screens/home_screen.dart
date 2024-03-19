@@ -8,6 +8,8 @@ import 'package:doku/screens/reports/all_report_screen.dart';
 import 'package:doku/screens/reports/annual_report_screen.dart';
 import 'package:doku/screens/reports/monthly_report_screen.dart';
 import 'package:doku/screens/reports/weekly_report_screen.dart';
+import 'package:doku/screens/settings/disclaimer_screen.dart';
+import 'package:doku/screens/settings/faq_screen.dart';
 import 'package:doku/screens/settings/setting_screen.dart';
 import 'package:doku/screens/transactions/create/expense_create_screen.dart';
 import 'package:doku/screens/transactions/create/income_create_screen.dart';
@@ -22,6 +24,7 @@ import 'package:community_charts_flutter/community_charts_flutter.dart'
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 enum StatusAd { initial, loaded }
 
@@ -183,6 +186,13 @@ class _HomeScreenState extends State<HomeScreen> {
     getLatestTransaction();
   }
 
+  String urlGooglePlay =
+      'https://play.google.com/store/apps/details?id=com.caraguna.dompet_apps';
+  void _launchUrl(String url) async {
+    if (!await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication))
+      throw 'Could not launch $url';
+  }
+
   @override
   void initState() {
     initData();
@@ -296,7 +306,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     return const ImportScreen();
                   }));
                 },
-                leading: const Icon(Icons.import_export),
+                leading: const Icon(Icons.exit_to_app),
                 title: const Text("Import")),
             ListTile(
                 onTap: () {
@@ -311,7 +321,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 onTap: () {
                   _scaffoldKey.currentState?.openEndDrawer();
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return const SettingScreen();
+                    return const DisclaimerScreen();
                   }));
                 },
                 leading: const Icon(Icons.warning_amber),
@@ -320,7 +330,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 onTap: () {
                   _scaffoldKey.currentState?.openEndDrawer();
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return const SettingScreen();
+                    return const FaqScreen();
                   }));
                 },
                 leading: const Icon(Icons.question_mark_outlined),
@@ -328,9 +338,8 @@ class _HomeScreenState extends State<HomeScreen> {
             ListTile(
                 onTap: () {
                   _scaffoldKey.currentState?.openEndDrawer();
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return const SettingScreen();
-                  }));
+                  _launchUrl(
+                      'https://docs.google.com/forms/d/e/1FAIpQLSeHAksu3qdj64kbieifkzAbQkKKT1HWLs0EZoPkPgV7_Ljrfg/viewform?usp=sf_link');
                 },
                 leading: const Icon(Icons.question_answer_outlined),
                 title: const Text("Kritik & Saran")),

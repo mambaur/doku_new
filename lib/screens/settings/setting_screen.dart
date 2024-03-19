@@ -1,7 +1,6 @@
 import 'package:doku/screens/about/about_screen.dart';
 import 'package:doku/screens/categories/category_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SettingScreen extends StatefulWidget {
@@ -72,18 +71,18 @@ class _SettingScreenState extends State<SettingScreen> {
                     ),
                     trailing: const Icon(Icons.chevron_right),
                   ),
-                  ListTile(
-                    onTap: () {
-                      Fluttertoast.showToast(
-                          msg: 'Fitur akan segera tersedia.');
-                    },
-                    contentPadding: EdgeInsets.zero,
-                    title: const Text(
-                      'Bahasa',
-                      style: TextStyle(fontSize: 14),
-                    ),
-                    trailing: const Icon(Icons.chevron_right),
-                  ),
+                  // ListTile(
+                  //   onTap: () {
+                  //     Fluttertoast.showToast(
+                  //         msg: 'Fitur akan segera tersedia.');
+                  //   },
+                  //   contentPadding: EdgeInsets.zero,
+                  //   title: const Text(
+                  //     'Bahasa',
+                  //     style: TextStyle(fontSize: 14),
+                  //   ),
+                  //   trailing: const Icon(Icons.chevron_right),
+                  // ),
                 ],
               ),
             ),

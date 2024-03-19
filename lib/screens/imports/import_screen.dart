@@ -61,7 +61,7 @@ class _ImportScreenState extends State<ImportScreen> {
                       borderRadius: BorderRadius.circular(10)),
                   child: Row(
                     children: [
-                      Expanded(
+                      const Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -98,9 +98,9 @@ class _ImportScreenState extends State<ImportScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text((file?.path ?? '').split('/').last,
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold)),
-                                Text('File uploaded')
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold)),
+                                const Text('File uploaded')
                               ],
                             ),
                           ),

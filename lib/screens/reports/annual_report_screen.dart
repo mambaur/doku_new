@@ -1,14 +1,14 @@
-import 'dart:typed_data';
-
 import 'package:document_file_save_plus/document_file_save_plus.dart';
 import 'package:doku/database/transactions/transaction_repository.dart';
 import 'package:doku/models/transaction_model.dart';
 import 'package:doku/screens/transactions/edit/list_edit_transaction_screen.dart';
 import 'package:doku/utils/currency_format.dart';
 import 'package:doku/utils/date_instance.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:excel/excel.dart' as ex;
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class AnnualReportScreen extends StatefulWidget {
   const AnnualReportScreen({super.key});
@@ -22,6 +22,7 @@ class _AnnualReportScreenState extends State<AnnualReportScreen> {
   final ScrollController _scrollController = ScrollController();
   List<int> years = [2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029];
   int selectedYear = 2022;
+  InterstitialAd? _interstitialAd;
 
   DateTime now = DateTime.now();
 
@@ -140,6 +141,24 @@ class _AnnualReportScreenState extends State<AnnualReportScreen> {
     getTransactions();
 
     _scrollController.addListener(onScroll);
+
+    InterstitialAd.load(
+        adUnitId: kDebugMode
+            ? 'ca-app-pub-3940256099942544/1033173712'
+            : 'ca-app-pub-2465007971338713/4287633671',
+        request: const AdRequest(),
+        adLoadCallback: InterstitialAdLoadCallback(
+          // Called when an ad is successfully received.
+          onAdLoaded: (ad) {
+            debugPrint('$ad loaded.');
+            // Keep a reference to the ad so you can show it later.
+            _interstitialAd = ad;
+          },
+          // Called when an ad request failed.
+          onAdFailedToLoad: (LoadAdError error) {
+            debugPrint('InterstitialAd failed to load: $error');
+          },
+        ));
     super.initState();
   }
 
@@ -152,8 +171,11 @@ class _AnnualReportScreenState extends State<AnnualReportScreen> {
         centerTitle: true,
         actions: [
           IconButton(
-            icon: const Icon(Icons.download),
-            onPressed: () {
+            icon: const Icon(Icons.download_outlined),
+            onPressed: () async {
+              if (_interstitialAd != null) {
+                await _interstitialAd!.show();
+              }
               downloadExcel();
             },
           )
